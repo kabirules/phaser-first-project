@@ -30,10 +30,14 @@
         function preload ()
         {
             this.load.image('player', 'assets/player.png');
-            this.load.image('invader1', 'assets/invader1.png');
+            //this.load.image('invader1', 'assets/invader1.png');
             this.load.image('invader2', 'assets/invader2.png');
             this.load.image('invader3', 'assets/invader3.png');
             this.load.image('bullet', 'assets/bullet.png');
+            this.load.spritesheet('invader1ss', 
+                'assets/invader1_ss.png',
+                { frameWidth: 44, frameHeight: 32 }
+            );
         }
 
         function create ()
@@ -44,12 +48,18 @@
             // ENEMIES
             allEnemies = this.physics.add.group()
             invaders1 = this.physics.add.group({
-                key: 'invader1',
+                key: 'invader1ss',
                 repeat: 6,
                 setXY: { x: 120, y:50, stepX: 60 }
             });
             invaders1.children.iterate(function (child) {
                 allEnemies.add(child)
+            });
+            this.anims.create({
+                key: 'invader1-anim',
+                frames: this.anims.generateFrameNumbers('invader1ss', { start: 0, end: 1 }),
+                frameRate: 3,
+                repeat: -1
             });
             invaders2 = this.physics.add.group({
                 key: 'invader2',
@@ -128,6 +138,11 @@
             if (minX < 30) {
                 allEnemies.setVelocityX(100)
             }
+            // ENEMIES ANIMATION
+            invaders1.children.iterate(function (child) {
+                child.anims.play('invader1-anim', true);
+            });
+            
         }
 
         //////
