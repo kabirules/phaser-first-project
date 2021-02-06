@@ -31,6 +31,8 @@
         {
             this.load.image('player', 'assets/player.png');
             this.load.image('invader1', 'assets/invader1.png');
+            this.load.image('invader2', 'assets/invader2.png');
+            this.load.image('invader3', 'assets/invader3.png');
             this.load.image('bullet', 'assets/bullet.png');
         }
 
@@ -40,24 +42,32 @@
             player = this.physics.add.sprite(300, 550, 'player');
             player.setCollideWorldBounds(true);
             // ENEMIES
+            allEnemies = this.physics.add.group()
             invaders1 = this.physics.add.group({
                 key: 'invader1',
                 repeat: 6,
                 setXY: { x: 120, y:50, stepX: 60 }
             });
             invaders1.children.iterate(function (child) {
-                child.setCollideWorldBounds(true);
+                allEnemies.add(child)
             });
             invaders2 = this.physics.add.group({
-                key: 'invader1',
+                key: 'invader2',
                 repeat: 6,
                 setXY: { x: 120, y:100, stepX: 60 }
             });
+            invaders2.children.iterate(function (child) {
+                allEnemies.add(child)
+            });
             invaders3 = this.physics.add.group({
-                key: 'invader1',
+                key: 'invader3',
                 repeat: 6,
                 setXY: { x: 120, y:150, stepX: 60 }
             });
+            invaders3.children.iterate(function (child) {
+                allEnemies.add(child)
+            });
+            /*
             invaders4 = this.physics.add.group({
                 key: 'invader1',
                 repeat: 6,
@@ -68,15 +78,16 @@
                 repeat: 6,
                 setXY: { x: 120, y:250, stepX: 60 }
             });                                                
-            
+            */
             // INPUT
             cursors = this.input.keyboard.createCursorKeys();
             keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
             // INITAL ENEMY MOVEMENT
-            invaders1.children.iterate(function (child) {
+            allEnemies.children.iterate(function (child) {
                 child.setVelocityX(100);
-            });
+                child.setCollideWorldBounds(true);
+            })
         }
 
         function update (time, delta)
@@ -97,14 +108,32 @@
                 bullet = this.physics.add.sprite(player.x, player.y-16, 'bullet');
                 bullet.setVelocityY(-500)
                 shootTime = time
+                this.physics.add.collider(bullet, allEnemies, enemyHit, null, this);
             }
             // ENEMIES MOVEMENT
-            if (invaders1.children.entries[0].x < 30) {
-                invaders1.setVelocityX(100)
+            // Calculate the lower and higher x of all enemies
+            maxX = 0
+            minX = 600
+            allEnemies.children.iterate(function (child) {
+                if (child.x > maxX) {
+                    maxX = child.x
+                }
+                if (child.x < minX) {
+                    minX = child.x
+                }                
+            })
+            if (maxX > 570) {
+                allEnemies.setVelocityX(-100)
             }
-            if (invaders1.children.entries[invaders1.children.entries.length -1].x > 570) {
-                invaders1.setVelocityX(-100)
+            if (minX < 30) {
+                allEnemies.setVelocityX(100)
             }
+        }
+
+        //////
+        function enemyHit(bullet, allEnemies) {
+            bullet.disableBody(true, true);
+            allEnemies.disableBody(true, true);
         }
     </script>
 
