@@ -25,19 +25,28 @@
 
         var game = new Phaser.Game(config);
 
-        var shootTime = -999
+        var enemySpeedX = 80
+        var enemySpeedY = 10
+        var isBulletAlive = false
+        var shootTime = -999 
 
         function preload ()
         {
             this.load.image('player', 'assets/player.png');
-            //this.load.image('invader1', 'assets/invader1.png');
-            this.load.image('invader2', 'assets/invader2.png');
-            this.load.image('invader3', 'assets/invader3.png');
             this.load.image('bullet', 'assets/bullet.png');
+            this.load.image('explosion', 'assets/explosion.png');
             this.load.spritesheet('invader1ss', 
-                'assets/invader1_ss.png',
+                'assets/invader1ss.png',
+                { frameWidth: 32, frameHeight: 32 }
+            );
+            this.load.spritesheet('invader2ss', 
+                'assets/invader2ss.png',
                 { frameWidth: 44, frameHeight: 32 }
             );
+            this.load.spritesheet('invader3ss', 
+                'assets/invader3ss.png',
+                { frameWidth: 48, frameHeight: 32 }
+            );            
         }
 
         function create ()
@@ -62,40 +71,58 @@
                 repeat: -1
             });
             invaders2 = this.physics.add.group({
-                key: 'invader2',
+                key: 'invader2ss',
                 repeat: 6,
                 setXY: { x: 120, y:100, stepX: 60 }
             });
             invaders2.children.iterate(function (child) {
                 allEnemies.add(child)
             });
+            this.anims.create({
+                key: 'invader2-anim',
+                frames: this.anims.generateFrameNumbers('invader2ss', { start: 0, end: 1 }),
+                frameRate: 3,
+                repeat: -1
+            });
             invaders3 = this.physics.add.group({
-                key: 'invader3',
+                key: 'invader2ss',
                 repeat: 6,
                 setXY: { x: 120, y:150, stepX: 60 }
             });
             invaders3.children.iterate(function (child) {
                 allEnemies.add(child)
             });
-            /*
             invaders4 = this.physics.add.group({
-                key: 'invader1',
+                key: 'invader3ss',
                 repeat: 6,
                 setXY: { x: 120, y:200, stepX: 60 }
             });
+            invaders4.children.iterate(function (child) {
+                allEnemies.add(child)
+            });
+            this.anims.create({
+                key: 'invader3-anim',
+                frames: this.anims.generateFrameNumbers('invader3ss', { start: 0, end: 1 }),
+                frameRate: 3,
+                repeat: -1
+            });
             invaders5 = this.physics.add.group({
-                key: 'invader1',
+                key: 'invader3ss',
                 repeat: 6,
                 setXY: { x: 120, y:250, stepX: 60 }
-            });                                                
-            */
+            });
+            invaders5.children.iterate(function (child) {
+                allEnemies.add(child)
+            });
+                                             
+
             // INPUT
             cursors = this.input.keyboard.createCursorKeys();
             keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
             // INITAL ENEMY MOVEMENT
             allEnemies.children.iterate(function (child) {
-                child.setVelocityX(100);
+                child.setVelocityX(enemySpeedX);
                 child.setCollideWorldBounds(true);
             })
         }
@@ -113,12 +140,13 @@
             } else {
                 player.setVelocityX(0);
             }
-            if (keySpace.isDown && time - shootTime > 1000)
+            if (keySpace.isDown && (!isBulletAlive || time - shootTime > 1000))
             {
                 bullet = this.physics.add.sprite(player.x, player.y-16, 'bullet');
                 bullet.setVelocityY(-500)
                 shootTime = time
                 this.physics.add.collider(bullet, allEnemies, enemyHit, null, this);
+                isBulletAlive = true
             }
             // ENEMIES MOVEMENT
             // Calculate the lower and higher x of all enemies
@@ -132,16 +160,37 @@
                     minX = child.x
                 }                
             })
+            moveDown = false
             if (maxX > 570) {
-                allEnemies.setVelocityX(-100)
+                allEnemies.setVelocityX(-enemySpeedX)
+                moveDown = true
             }
             if (minX < 30) {
-                allEnemies.setVelocityX(100)
+                allEnemies.setVelocityX(enemySpeedX)
+                moveDown = true
+            }
+            if (moveDown) {
+                moveDown = false
+                allEnemies.children.iterate(function (child) {
+                    child.y = child.y + enemySpeedY
+                });
             }
             // ENEMIES ANIMATION
             invaders1.children.iterate(function (child) {
                 child.anims.play('invader1-anim', true);
             });
+            invaders2.children.iterate(function (child) {
+                child.anims.play('invader2-anim', true);
+            });
+            invaders3.children.iterate(function (child) {
+                child.anims.play('invader2-anim', true);
+            });
+            invaders4.children.iterate(function (child) {
+                child.anims.play('invader3-anim', true);
+            });
+            invaders5.children.iterate(function (child) {
+                child.anims.play('invader3-anim', true);
+            });            
             
         }
 
@@ -149,7 +198,11 @@
         function enemyHit(bullet, allEnemies) {
             bullet.disableBody(true, true);
             allEnemies.disableBody(true, true);
+            isBulletAlive = false
+            explosion = this.add.image(bullet.x, bullet.y-20, 'explosion');
+            // TODO remove explosion it after 1 seconds
         }
+
     </script>
 
 </body>
