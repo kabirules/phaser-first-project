@@ -28,14 +28,19 @@
         var enemySpeedX = 80
         var enemySpeedY = 10
         var isBulletAlive = false
+        var isEnemyBulletAlive = false
         var shootTime = -999
+        var enemyShootTime = -999
         var score = 0;
+        var hiScore = 0;
         var scoreText;
+        var hiScoreText;
 
         function preload ()
         {
             this.load.image('player', 'assets/player.png');
             this.load.image('bullet', 'assets/bullet.png');
+            this.load.image('enemyBullet', 'assets/enemyBullet.png');
             this.load.image('explosion', 'assets/explosion.png');
             this.load.spritesheet('invader1ss', 
                 'assets/invader1ss.png',
@@ -145,7 +150,8 @@
             });
 
             // SCORE
-            scoreText = this.add.text(16, 16, 'SCORE: 0', { fontFamily: 'someFont', fontSize: '32px', fill: '#fff' });
+            scoreText = this.add.text(16, 16, 'SCORE: 0', { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
+            hiScoreText = this.add.text(280, 16, hiScore, { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
         }
 
         function update (time, delta)
@@ -196,6 +202,17 @@
                     child.y = child.y + enemySpeedY
                 });
             }
+            // WIP - ENEMIES ATTACK
+            shootingEnemy = allEnemies.getChildren()[Phaser.Math.Between(0, 34)]
+            if (shootingEnemy.active && (!isEnemyBulletAlive || time - enemyShootTime > 2000)) {
+                enemyBullet = this.physics.add.sprite(shootingEnemy.x, shootingEnemy.y, 'enemyBullet');
+                enemyBullet.setVelocityY(200)
+                enemyShootTime = time
+                this.physics.add.collider(enemyBullet, player, playerHit, null, this);
+                isEnemyBulletAlive = true
+            }
+
+            // TODO - ALL ENEMIES DEAD?
             
             
         }
@@ -217,6 +234,14 @@
                 score += 10;
             }            
             scoreText.setText('SCORE: ' + score);
+            if (score > hiScore) {
+                hiScore = score
+                hiScoreText.setText(hiScore);
+            }
+        }
+
+        function playerHit(enemyBullet, player) {
+            console.log('HIT')
         }
 
         function loadFont(name, url) {
