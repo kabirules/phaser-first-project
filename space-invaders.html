@@ -28,7 +28,9 @@
         var enemySpeedX = 80
         var enemySpeedY = 10
         var isBulletAlive = false
-        var shootTime = -999 
+        var shootTime = -999
+        var score = 0;
+        var scoreText;
 
         function preload ()
         {
@@ -46,7 +48,8 @@
             this.load.spritesheet('invader3ss', 
                 'assets/invader3ss.png',
                 { frameWidth: 48, frameHeight: 32 }
-            );            
+            );
+            loadFont("someFont", "assets/fonts/someFont.ttf");
         }
 
         function create ()
@@ -115,7 +118,6 @@
                 allEnemies.add(child)
             });
                                              
-
             // INPUT
             cursors = this.input.keyboard.createCursorKeys();
             keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -125,6 +127,25 @@
                 child.setVelocityX(enemySpeedX);
                 child.setCollideWorldBounds(true);
             })
+            // ENEMIES ANIMATION
+            invaders1.children.iterate(function (child) {
+                child.anims.play('invader1-anim', true);
+            });
+            invaders2.children.iterate(function (child) {
+                child.anims.play('invader2-anim', true);
+            });
+            invaders3.children.iterate(function (child) {
+                child.anims.play('invader2-anim', true);
+            });
+            invaders4.children.iterate(function (child) {
+                child.anims.play('invader3-anim', true);
+            });
+            invaders5.children.iterate(function (child) {
+                child.anims.play('invader3-anim', true);
+            });
+
+            // SCORE
+            scoreText = this.add.text(16, 16, 'SCORE: 0', { fontFamily: 'someFont', fontSize: '32px', fill: '#fff' });
         }
 
         function update (time, delta)
@@ -175,33 +196,37 @@
                     child.y = child.y + enemySpeedY
                 });
             }
-            // ENEMIES ANIMATION
-            invaders1.children.iterate(function (child) {
-                child.anims.play('invader1-anim', true);
-            });
-            invaders2.children.iterate(function (child) {
-                child.anims.play('invader2-anim', true);
-            });
-            invaders3.children.iterate(function (child) {
-                child.anims.play('invader2-anim', true);
-            });
-            invaders4.children.iterate(function (child) {
-                child.anims.play('invader3-anim', true);
-            });
-            invaders5.children.iterate(function (child) {
-                child.anims.play('invader3-anim', true);
-            });            
+            
             
         }
 
         //////
-        function enemyHit(bullet, allEnemies) {
+        function enemyHit(bullet, enemy) {
             bullet.disableBody(true, true);
-            allEnemies.disableBody(true, true);
+            enemy.disableBody(true, true);
             isBulletAlive = false
             explosion = this.add.image(bullet.x, bullet.y-20, 'explosion');
-            // TODO remove explosion it after 1 seconds
+            this.tweens.add({targets: explosion, alpha: 0, duration: 200, ease: 'Power2'}, this);
+            if (invaders1.children.contains(enemy)) {
+                score += 40;
+            }
+            if (invaders2.children.contains(enemy) || invaders3.children.contains(enemy)) {
+                score += 20;
+            }
+            if (invaders4.children.contains(enemy) || invaders5.children.contains(enemy)) {
+                score += 10;
+            }            
+            scoreText.setText('SCORE: ' + score);
         }
+
+        function loadFont(name, url) {
+            var newFont = new FontFace(name, `url(${url})`);
+            newFont.load().then(function (loaded) {
+            document.fonts.add(loaded);
+        }).catch(function (error) {
+            return error;
+        });
+}        
 
     </script>
 
