@@ -42,6 +42,7 @@
             this.load.image('bullet', 'assets/bullet.png');
             this.load.image('enemyBullet', 'assets/enemyBullet.png');
             this.load.image('explosion', 'assets/explosion.png');
+            this.load.image('enemyExplosion', 'assets/enemyExplosion.png');
             this.load.spritesheet('invader1ss', 
                 'assets/invader1ss.png',
                 { frameWidth: 32, frameHeight: 32 }
@@ -222,8 +223,8 @@
             bullet.disableBody(true, true);
             enemy.disableBody(true, true);
             isBulletAlive = false
-            explosion = this.add.image(bullet.x, bullet.y-20, 'explosion');
-            this.tweens.add({targets: explosion, alpha: 0, duration: 200, ease: 'Power2'}, this);
+            enemyExplosion = this.add.image(bullet.x, bullet.y-20, 'enemyExplosion');
+            this.tweens.add({targets: enemyExplosion, alpha: 0, duration: 200, ease: 'Power2'}, this);
             if (invaders1.children.contains(enemy)) {
                 score += 40;
             }
@@ -241,7 +242,14 @@
         }
 
         function playerHit(enemyBullet, player) {
-            console.log('HIT')
+            player.setVelocityY(0)
+            enemyBullet.disableBody(true, true);
+            this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
+            explosion = this.add.image(player.x, player.y, 'explosion');
+            this.tweens.add({targets: explosion, alpha: 0, duration: 2000, ease: 'Power2'}, this);
+            player.x = 300
+            player.y = 550
+            this.tweens.add({targets: player, alpha: 1, duration: 2000, ease: 'Power2'}, this);
         }
 
         function loadFont(name, url) {
