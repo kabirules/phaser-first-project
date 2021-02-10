@@ -26,15 +26,17 @@
         var game = new Phaser.Game(config);
 
         var enemySpeedX = 80
-        var enemySpeedY = 10
+        var enemySpeedY = 80
         var isBulletAlive = false
         var isEnemyBulletAlive = false
         var shootTime = -999
         var enemyShootTime = -999
-        var score = 0;
-        var hiScore = 0;
-        var scoreText;
-        var hiScoreText;
+        var score = 0
+        var hiScore = 0
+        var scoreText
+        var hiScoreText
+        var gameOverText
+        var canPlayerMove = true
 
         function preload ()
         {
@@ -123,6 +125,7 @@
             invaders5.children.iterate(function (child) {
                 allEnemies.add(child)
             });
+            this.physics.add.collider(allEnemies, player, playerHitByEnemy, null, this);
                                              
             // INPUT
             cursors = this.input.keyboard.createCursorKeys();
@@ -153,28 +156,31 @@
             // SCORE
             scoreText = this.add.text(16, 16, 'SCORE: 0', { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
             hiScoreText = this.add.text(280, 16, hiScore, { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
+
         }
 
         function update (time, delta)
         {
             // PLAYER MOVEMENT
-            if (cursors.left.isDown)
-            {
-                player.setVelocityX(-200);
-            }
-            else if (cursors.right.isDown)
-            {
-                player.setVelocityX(200);
-            } else {
-                player.setVelocityX(0);
-            }
-            if (keySpace.isDown && (!isBulletAlive || time - shootTime > 1000))
-            {
-                bullet = this.physics.add.sprite(player.x, player.y-16, 'bullet');
-                bullet.setVelocityY(-500)
-                shootTime = time
-                this.physics.add.collider(bullet, allEnemies, enemyHit, null, this);
-                isBulletAlive = true
+            if (canPlayerMove) {
+                    if (cursors.left.isDown)
+                {
+                    player.setVelocityX(-200);
+                }
+                else if (cursors.right.isDown)
+                {
+                    player.setVelocityX(200);
+                } else {
+                    player.setVelocityX(0);
+                }
+                if (keySpace.isDown && (!isBulletAlive || time - shootTime > 1000))
+                {
+                    bullet = this.physics.add.sprite(player.x, player.y-16, 'bullet');
+                    bullet.setVelocityY(-500)
+                    shootTime = time
+                    this.physics.add.collider(bullet, allEnemies, enemyHit, null, this);
+                    isBulletAlive = true
+                }
             }
             // ENEMIES MOVEMENT
             // Calculate the lower and higher x of all enemies
@@ -203,7 +209,7 @@
                     child.y = child.y + enemySpeedY
                 });
             }
-            // WIP - ENEMIES ATTACK
+            // ENEMIES ATTACK
             shootingEnemy = allEnemies.getChildren()[Phaser.Math.Between(0, 34)]
             if (shootingEnemy.active && (!isEnemyBulletAlive || time - enemyShootTime > 2000)) {
                 enemyBullet = this.physics.add.sprite(shootingEnemy.x, shootingEnemy.y, 'enemyBullet');
@@ -213,8 +219,10 @@
                 isEnemyBulletAlive = true
             }
 
-            // TODO - ALL ENEMIES DEAD?
-            
+            // WIP - ALL ENEMIES DEAD?
+            if (allEnemies.countActive(true) === 0) {
+                console.log('ALL DEAD')
+            }
             
         }
 
@@ -251,6 +259,22 @@
             player.y = 550
             this.tweens.add({targets: player, alpha: 1, duration: 2000, ease: 'Power2'}, this);
         }
+
+        function playerHitByEnemy(enemy, player) {
+            // GAME OVER!!
+            this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
+            explosion = this.add.image(player.x, player.y, 'explosion');
+            this.tweens.add({targets: explosion, alpha: 0, duration: 2000, ease: 'Power2'}, this);
+            // STOP EVERYTHING
+            enemySpeedX = 0
+            enemySpeedY = 0
+            shootTime = 999999999
+            enemyShootTime = 999999999
+            canPlayerMove = false
+            gameOverText = this.add.text(200, 200, 'GAME OVER', { fontFamily: 'someFont', fontSize: '48px', fill: '#fff' });
+        }
+
+
 
         function loadFont(name, url) {
             var newFont = new FontFace(name, `url(${url})`);
