@@ -181,6 +181,14 @@
                     this.physics.add.collider(bullet, allEnemies, enemyHit, null, this);
                     isBulletAlive = true
                 }
+            } else { // OR RESTART THE GAME
+                if (keySpace.isDown) {
+                    console.log(this.scene)
+                    // TODO gameRestart()
+                    console.log('GAME RESTART')
+                    this.scene.restart();
+
+                }
             }
             // ENEMIES MOVEMENT
             // Calculate the lower and higher x of all enemies
@@ -215,7 +223,7 @@
                 enemyBullet = this.physics.add.sprite(shootingEnemy.x, shootingEnemy.y, 'enemyBullet');
                 enemyBullet.setVelocityY(200)
                 enemyShootTime = time
-                this.physics.add.collider(enemyBullet, player, playerHit, null, this);
+                this.physics.add.collider(enemyBullet, player, playerHitByEnemyBullet, null, this);
                 isEnemyBulletAlive = true
             }
 
@@ -249,7 +257,7 @@
             }
         }
 
-        function playerHit(enemyBullet, player) {
+        function playerHitByEnemyBullet(enemyBullet, player) {
             player.setVelocityY(0)
             enemyBullet.disableBody(true, true);
             this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
@@ -273,8 +281,6 @@
             canPlayerMove = false
             gameOverText = this.add.text(200, 200, 'GAME OVER', { fontFamily: 'someFont', fontSize: '48px', fill: '#fff' });
         }
-
-
 
         function loadFont(name, url) {
             var newFont = new FontFace(name, `url(${url})`);
