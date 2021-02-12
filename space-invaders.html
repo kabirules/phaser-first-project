@@ -36,7 +36,11 @@
         var scoreText
         var hiScoreText
         var gameOverText
+        var waveText
+        var livesText
         var canPlayerMove = true
+        var lives = 3
+        var wave = 1
 
         function preload ()
         {
@@ -157,7 +161,12 @@
             // SCORE
             scoreText = this.add.text(16, 16, 'SCORE: 0', { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
             hiScoreText = this.add.text(280, 16, hiScore, { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
-
+            // WAVE
+            waveText = this.add.text(380, 16, 'WAVE ' + wave, { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
+            // GAME OVER
+            gameOverText = this.add.text(200, 200, '', { fontFamily: 'someFont', fontSize: '48px', fill: '#fff' });
+            // LIVES
+            livesText = this.add.text(480, 16, 'LIVES ' + lives, { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
         }
 
         function update (time, delta)
@@ -184,7 +193,7 @@
                 }
             } else { // OR RESTART THE GAME
                 if (keySpace.isDown) {
-                    startGame()
+                    startGame(80,10)
                     this.scene.restart();
                 }
             }
@@ -227,7 +236,10 @@
 
             // WIP - ALL ENEMIES DEAD?
             if (allEnemies.countActive(true) === 0) {
-                console.log('ALL DEAD')
+                wave++
+                waveText.setText = 'WAVE ' + wave
+                startGame(enemySpeedX + wave*10, enemySpeedY + wave)
+                this.scene.restart();
             }
             
         }
@@ -264,37 +276,45 @@
             player.x = 300
             player.y = 550
             this.tweens.add({targets: player, alpha: 1, duration: 2000, ease: 'Power2'}, this);
+            lives--
+            livesText.setText('LIVES ' + lives)
+            if (lives === 0) {
+                stopGame()
+            }
         }
 
+        // GAME OVER!
         function playerHitByEnemy(enemy, player) {
-            // GAME OVER!!
             this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
             explosion = this.add.image(player.x, player.y, 'explosion');
             this.tweens.add({targets: explosion, alpha: 0, duration: 2000, ease: 'Power2'}, this);
-            gameOverText = this.add.text(200, 200, 'GAME OVER', { fontFamily: 'someFont', fontSize: '48px', fill: '#fff' });
             stopGame()
         }
 
+        // ONLY CALLED ON GAME OVER
         function stopGame() {
+            gameOverText.setText('GAME OVER')
             allEnemies.setVelocityX(0)
             player.setVelocityX(0)
             score = 0
             shootTime = 999999999
             enemyShootTime = 999999999
             canPlayerMove = false
+            wave = 1
+            lives = 3
         }
 
-        function startGame() {
+        // RESTART GAME AFTER GAME OVER OR FINISH WAVE
+        function startGame(speedX, speedY) {
             shootTime = -999
             enemyShootTime = -999
             canPlayerMove = true
             isBulletAlive = false
-            enemySpeedX = 80
-            enemySpeedY = 10
+            enemySpeedX = speedX
+            enemySpeedY = speedY
             allEnemies.setVelocityX(enemySpeedX)
+            livesText.setText('LIVES ' + lives)
         }        
-
-
 
         function loadFont(name, url) {
             var newFont = new FontFace(name, `url(${url})`);
