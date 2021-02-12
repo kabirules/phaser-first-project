@@ -26,7 +26,7 @@
         var game = new Phaser.Game(config);
 
         var enemySpeedX = 80
-        var enemySpeedY = 80
+        var enemySpeedY = 10
         var isBulletAlive = false
         var isEnemyBulletAlive = false
         var shootTime = -999
@@ -136,6 +136,7 @@
                 child.setVelocityX(enemySpeedX);
                 child.setCollideWorldBounds(true);
             })
+            
             // ENEMIES ANIMATION
             invaders1.children.iterate(function (child) {
                 child.anims.play('invader1-anim', true);
@@ -183,11 +184,8 @@
                 }
             } else { // OR RESTART THE GAME
                 if (keySpace.isDown) {
-                    console.log(this.scene)
-                    // TODO gameRestart()
-                    console.log('GAME RESTART')
+                    startGame()
                     this.scene.restart();
-
                 }
             }
             // ENEMIES MOVEMENT
@@ -273,14 +271,30 @@
             this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
             explosion = this.add.image(player.x, player.y, 'explosion');
             this.tweens.add({targets: explosion, alpha: 0, duration: 2000, ease: 'Power2'}, this);
-            // STOP EVERYTHING
-            enemySpeedX = 0
-            enemySpeedY = 0
+            gameOverText = this.add.text(200, 200, 'GAME OVER', { fontFamily: 'someFont', fontSize: '48px', fill: '#fff' });
+            stopGame()
+        }
+
+        function stopGame() {
+            allEnemies.setVelocityX(0)
+            player.setVelocityX(0)
+            score = 0
             shootTime = 999999999
             enemyShootTime = 999999999
             canPlayerMove = false
-            gameOverText = this.add.text(200, 200, 'GAME OVER', { fontFamily: 'someFont', fontSize: '48px', fill: '#fff' });
         }
+
+        function startGame() {
+            shootTime = -999
+            enemyShootTime = -999
+            canPlayerMove = true
+            isBulletAlive = false
+            enemySpeedX = 80
+            enemySpeedY = 10
+            allEnemies.setVelocityX(enemySpeedX)
+        }        
+
+
 
         function loadFont(name, url) {
             var newFont = new FontFace(name, `url(${url})`);
