@@ -41,6 +41,8 @@
         var canPlayerMove = true
         var lives = 3
         var wave = 1
+        var restartDelay
+        var currentTime
 
         function preload ()
         {
@@ -171,6 +173,7 @@
 
         function update (time, delta)
         {
+            currentTime = time
             // PLAYER MOVEMENT
             if (canPlayerMove) {
                     if (cursors.left.isDown)
@@ -191,8 +194,8 @@
                     this.physics.add.collider(bullet, allEnemies, enemyHit, null, this);
                     isBulletAlive = true
                 }
-            } else { // OR RESTART THE GAME
-                if (keySpace.isDown) {
+            } else { // OR RESTART THE GAME - DISABLED FOR 3 seconds
+                if (keySpace.isDown &&  time - restartDelay > 3000) {
                     startGame(80,10)
                     this.scene.restart();
                 }
@@ -302,6 +305,7 @@
             canPlayerMove = false
             wave = 1
             lives = 3
+            restartDelay = currentTime
         }
 
         // RESTART GAME AFTER GAME OVER OR FINISH WAVE
