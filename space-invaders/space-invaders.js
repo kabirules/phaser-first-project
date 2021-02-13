@@ -132,6 +132,7 @@ export class Game extends Phaser.Scene {
         });
 
         // SCORE
+        this.hiScore = localStorage.getItem('hiScore')!=undefined?localStorage.getItem('hiScore'):0;
         this.scoreText = this.add.text(16, 16, 'SCORE: 0', { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
         this.hiScoreText = this.add.text(280, 16, this.hiScore, { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
         // WAVE
@@ -238,6 +239,7 @@ export class Game extends Phaser.Scene {
         if (this.score > this.hiScore) {
             this.hiScore = this.score
             this.hiScoreText.setText(this.hiScore);
+            localStorage.setItem('hiScore', this.score);
         }
     }
 

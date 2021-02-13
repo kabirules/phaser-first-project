@@ -161,6 +161,7 @@
             });
 
             // SCORE
+            hiScore = localStorage.getItem('hiScore')!=undefined?localStorage.getItem('hiScore'):0;
             scoreText = this.add.text(16, 16, 'SCORE: 0', { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
             hiScoreText = this.add.text(280, 16, hiScore, { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
             // WAVE
@@ -267,6 +268,7 @@
             if (score > hiScore) {
                 hiScore = score
                 hiScoreText.setText(hiScore);
+                localStorage.setItem('hiScore', score);
             }
         }
 
@@ -327,8 +329,7 @@
         }).catch(function (error) {
             return error;
         });
-}        
-
+}
     </script>
 
 </body>
