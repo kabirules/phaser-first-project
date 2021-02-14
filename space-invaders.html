@@ -41,11 +41,13 @@
         var canPlayerMove = true
         var lives = 3
         var wave = 1
-        var restartDelay
+        var restartDelay = 0
         var currentTime
+        var isPlayerExplosion = true 
 
         function preload ()
         {
+            // images
             this.load.image('player', 'assets/player.png');
             this.load.image('bullet', 'assets/bullet.png');
             this.load.image('enemyBullet', 'assets/enemyBullet.png');
@@ -63,6 +65,11 @@
                 'assets/invader3ss.png',
                 { frameWidth: 48, frameHeight: 32 }
             );
+            // sounds
+            this.load.audio('enemyExplosion', 'assets/enemyExplosion.wav')
+            this.load.audio('playerExplosion', 'assets/playerExplosion.wav')
+            this.load.audio('shot', 'assets/shot.wav')
+            // fonts
             loadFont("someFont", "assets/fonts/someFont.ttf");
         }
 
@@ -71,6 +78,7 @@
             // PLAYER
             player = this.physics.add.sprite(300, 550, 'player');
             player.setCollideWorldBounds(true);
+            isPlayerExplosion = true
             // ENEMIES
             allEnemies = this.physics.add.group()
             invaders1 = this.physics.add.group({
@@ -189,6 +197,7 @@
                 }
                 if (keySpace.isDown && (!isBulletAlive || time - shootTime > 1000))
                 {
+                    this.sound.play('shot')
                     bullet = this.physics.add.sprite(player.x, player.y-16, 'bullet');
                     bullet.setVelocityY(-500)
                     shootTime = time
@@ -196,6 +205,8 @@
                     isBulletAlive = true
                 }
             } else { // OR RESTART THE GAME - DISABLED FOR 3 seconds
+                console.log({time})
+                console.log({restartDelay})
                 if (keySpace.isDown &&  time - restartDelay > 3000) {
                     startGame(80,10)
                     this.scene.restart();
@@ -238,7 +249,7 @@
                 isEnemyBulletAlive = true
             }
 
-            // WIP - ALL ENEMIES DEAD?
+            // ALL ENEMIES DEAD?
             if (allEnemies.countActive(true) === 0) {
                 wave++
                 waveText.setText = 'WAVE ' + wave
@@ -250,6 +261,7 @@
 
         //////
         function enemyHit(bullet, enemy) {
+            this.sound.play('enemyExplosion')
             bullet.disableBody(true, true);
             enemy.disableBody(true, true);
             isBulletAlive = false
@@ -273,6 +285,7 @@
         }
 
         function playerHitByEnemyBullet(enemyBullet, player) {
+            this.sound.play('playerExplosion')
             player.setVelocityY(0)
             enemyBullet.disableBody(true, true);
             this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
@@ -290,6 +303,10 @@
 
         // GAME OVER!
         function playerHitByEnemy(enemy, player) {
+            if (isPlayerExplosion) {
+                this.sound.play('playerExplosion')
+                isPlayerExplosion = false
+            }
             this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
             explosion = this.add.image(player.x, player.y, 'explosion');
             this.tweens.add({targets: explosion, alpha: 0, duration: 2000, ease: 'Power2'}, this);
@@ -307,7 +324,7 @@
             canPlayerMove = false
             wave = 1
             lives = 3
-            restartDelay = currentTime
+            restartDelay = restartDelay===0?currentTime:restartDelay
         }
 
         // RESTART GAME AFTER GAME OVER OR FINISH WAVE
@@ -320,6 +337,7 @@
             enemySpeedY = speedY
             allEnemies.setVelocityX(enemySpeedX)
             livesText.setText('LIVES ' + lives)
+            restartDelay = 0
         }        
 
         function loadFont(name, url) {

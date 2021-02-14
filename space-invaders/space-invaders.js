@@ -23,10 +23,12 @@ export class Game extends Phaser.Scene {
         this.restartDelay=0
         this.currentTime
         this.allEnemies
+        this.isPlayerExplosion = true
     }
 
     preload ()
     {
+        //images
         this.load.image('player', 'assets/player.png');
         this.load.image('bullet', 'assets/bullet.png');
         this.load.image('enemyBullet', 'assets/enemyBullet.png');
@@ -44,6 +46,11 @@ export class Game extends Phaser.Scene {
             'assets/invader3ss.png',
             { frameWidth: 48, frameHeight: 32 }
         );
+        // sounds
+        this.load.audio('enemyExplosion', 'assets/enemyExplosion.wav')
+        this.load.audio('playerExplosion', 'assets/playerExplosion.wav')
+        this.load.audio('shot', 'assets/shot.wav')
+        // fonts
         this.loadFont("someFont", "assets/fonts/someFont.ttf");
     }
     
@@ -52,6 +59,7 @@ export class Game extends Phaser.Scene {
         // PLAYER
         this.player = this.physics.add.sprite(300, 550, 'player');
         this.player.setCollideWorldBounds(true);
+        this.isPlayerExplosion = true
         // ENEMIES
         this.allEnemies = this.physics.add.group()
         this.invaders1 = this.physics.add.group({
@@ -168,6 +176,7 @@ export class Game extends Phaser.Scene {
             }
         } else { // OR RESTART THE GAME - DISABLED FOR 3 seconds
             if (this.keySpace.isDown &&  time - this.restartDelay > 3000) {
+                this.sound.play('shot')
                 this.startGame(80,10)
                 this.scene.restart();
             }
@@ -211,7 +220,7 @@ export class Game extends Phaser.Scene {
             this.isEnemyBulletAlive = true
         }
 
-        // WIP - ALL ENEMIES DEAD?
+        // ALL ENEMIES DEAD?
         if (this.allEnemies.countActive(true) === 0) {
             this.wave++
             this.waveText.setText = 'WAVE ' + this.wave
@@ -221,6 +230,7 @@ export class Game extends Phaser.Scene {
     }
 
     enemyHit(bullet, enemy) {
+        this.sound.play('enemyExplosion')
         bullet.disableBody(true, true);
         enemy.disableBody(true, true);
         this.isBulletAlive = false
@@ -244,6 +254,7 @@ export class Game extends Phaser.Scene {
     }
 
     playerHitByEnemyBullet(enemyBullet, player) {
+        this.sound.play('playerExplosion')
         player.setVelocityY(0)
         enemyBullet.disableBody(true, true);
         this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
@@ -261,6 +272,10 @@ export class Game extends Phaser.Scene {
 
     // GAME OVER!
     playerHitByEnemy(enemy, player) {
+        if (this.isPlayerExplosion) {
+            this.sound.play('playerExplosion')
+            this.isPlayerExplosion = false
+        }
         this.tweens.add({targets: player, alpha: 0, duration: 1, ease: 'Power2'}, this);
         var explosion = this.add.image(player.x, player.y, 'explosion');
         this.tweens.add({targets: explosion, alpha: 0, duration: 2000, ease: 'Power2'}, this);
