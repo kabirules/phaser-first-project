@@ -1,4 +1,6 @@
-import { Game } from './space-invaders.js';
+import { Game } from './scenes/space-invaders.js';
+import { Home } from './scenes/home.js';
+
 
 const config = {
     type: Phaser.AUTO,
@@ -10,7 +12,7 @@ const config = {
             gravity: { y: 0 }
         }
     },
-    scene: [Game]
+    scene: [Home, Game]
 };
 
 var game = new Phaser.Game(config);
