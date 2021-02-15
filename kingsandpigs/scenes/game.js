@@ -1,3 +1,5 @@
+import { Player } from '../components/player.js';
+
 export class Game extends Phaser.Scene {
 
     constructor() {
@@ -8,24 +10,38 @@ export class Game extends Phaser.Scene {
     }
 
     preload() {
-        this.load.spritesheet('player', 
+        this.load.spritesheet('playerIdle', 
             'assets/01-King Human/Idle (78x58).png',
             { frameWidth: 78, frameHeight: 58 }
         );
+        this.load.spritesheet('playerRunRight', 
+            'assets/01-King Human/Run (78x58).png',
+            { frameWidth: 78, frameHeight: 58 }
+        );        
     }
 
     create() {
-        this.player = this.physics.add.sprite(640, 360, 'player');
-        this.anims.create({
-            key: 'player-idle',
-            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 10 }),
-            frameRate: 15,
-            repeat: -1
-        })
-        this.player.anims.play('player-idle', true);
+        // PLAYER
+        this.player = new Player(this.physics, this.anims)
+        this.player.create()
+        this.player.stop()
 
+        // INPUT
+        this.cursors = this.input.keyboard.createCursorKeys()
+        this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     }
 
     update() {
+        // PLAYER MOVEMENT
+        if (this.cursors.left.isDown) {
+            this.player.moveLeft()
+        } else if (this.cursors.right.isDown) {
+            this.player.moveRight()
+        } else {
+            this.player.stop()
+        }
+        if (this.keySpace.isDown) {
+            console.log('attack!')
+        }
     }
 }
