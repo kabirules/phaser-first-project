@@ -7,6 +7,7 @@ export class Game extends Phaser.Scene {
     }
 
     init() {
+        this.playerAttackTime = -999
     }
 
     preload() {
@@ -14,8 +15,12 @@ export class Game extends Phaser.Scene {
             'assets/01-King Human/Idle (78x58).png',
             { frameWidth: 78, frameHeight: 58 }
         );
-        this.load.spritesheet('playerRunRight', 
+        this.load.spritesheet('playerRun', 
             'assets/01-King Human/Run (78x58).png',
+            { frameWidth: 78, frameHeight: 58 }
+        );
+        this.load.spritesheet('playerAttack', 
+            'assets/01-King Human/Attack (78x58).png',
             { frameWidth: 78, frameHeight: 58 }
         );        
     }
@@ -31,7 +36,7 @@ export class Game extends Phaser.Scene {
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     }
 
-    update() {
+    update(time) {
         // PLAYER MOVEMENT
         if (this.cursors.left.isDown) {
             this.player.moveLeft()
@@ -40,8 +45,9 @@ export class Game extends Phaser.Scene {
         } else {
             this.player.stop()
         }
-        if (this.keySpace.isDown) {
-            console.log('attack!')
+        if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
+            this.player.attack()
+            this.playerAttackTime = time
         }
     }
 }

@@ -3,9 +3,10 @@ export class Player {
         this.physics = physics
         this.anims = anims
     }
-  
+
     create() {
         this.player = this.physics.add.sprite(640, 360, 'player');
+        this.player.setCollideWorldBounds(true)
         this.anims.create({
             key: 'playerIdle',
             frames: this.anims.generateFrameNumbers('playerIdle', { start: 0, end: 10 }),
@@ -14,7 +15,13 @@ export class Player {
         })
         this.anims.create({
             key: 'playerRun',
-            frames: this.anims.generateFrameNumbers('playerRunRight', { start: 0, end: 7 }),
+            frames: this.anims.generateFrameNumbers('playerRun', { start: 0, end: 7 }),
+            frameRate: 15,
+            repeat: -1
+        })
+        this.anims.create({
+            key: 'playerAttack',
+            frames: this.anims.generateFrameNumbers('playerAttack', { start: 0, end: 2 }),
             frameRate: 15,
             repeat: -1
         })        
@@ -35,6 +42,10 @@ export class Player {
     stop() {
         this.player.setVelocityX(0)
         this.player.anims.play('playerIdle', true)
+    }
+
+    attack() {
+        this.player.anims.play('playerAttack', true)
     }
 
   }
