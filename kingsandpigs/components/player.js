@@ -38,6 +38,13 @@ export class Player {
             frameRate: 15,
             repeat: -1
         })
+        this.anims.create({
+            key: 'playerGround',
+            frames: this.anims.generateFrameNumbers('playerGround', { start: 0, end: 0 }),
+            frameRate: 15,
+            repeat: -1
+        })
+        
     }
 
     sprite() {
@@ -77,6 +84,11 @@ export class Player {
 
     jumpDown() {
         this.player.anims.play('playerJumpDown', true)
-    }    
+    }
+
+    ground() {
+        this.player.setVelocityX(0)
+        this.player.anims.play('playerGround', true)
+    }
 
   }

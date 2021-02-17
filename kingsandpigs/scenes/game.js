@@ -31,7 +31,11 @@ export class Game extends Phaser.Scene {
             'assets/01-King Human/Fall (78x58).png',
             { frameWidth: 78, frameHeight: 58 }
         );
-        this.load.image('atlas', 'assets/14-TileSets/Terrain (32x32).png');
+        this.load.spritesheet('playerGround', 
+            'assets/01-King Human/Ground (78x58).png',
+            { frameWidth: 78, frameHeight: 58 }
+        );
+        this.load.image('terrain', 'assets/14-TileSets/Terrain (32x32).png');
     }
 
     create() {
@@ -46,7 +50,7 @@ export class Game extends Phaser.Scene {
 
         // FLOOR
         this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(600, 400, 'atlas');
+        this.platforms.create(600, 400, 'terrain');
         //this.floor = this.physics.add.sprite(385, 430, 'atlas');
         //this.floor.setCollideWorldBounds(true)
         this.physics.add.collider(this.player.sprite(), this.platforms);
@@ -69,6 +73,9 @@ export class Game extends Phaser.Scene {
         if (this.cursors.up.isDown) {
             this.player.jump()
         }
+        if (this.cursors.down.isDown) {
+            this.player.ground()
+        }        
         if (!playerSprite.body.touching.down) {
             if (playerSprite.body.velocity.y < 0) {
                 this.player.jumpUp()
