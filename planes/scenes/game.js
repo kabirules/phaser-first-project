@@ -12,19 +12,27 @@ export class Game extends Phaser.Scene {
         this.plane = this.physics.add.sprite(300, 550, 'plane');
         this.plane.setScale(0.3)
         this.plane.setCollideWorldBounds(true);
+        //this.plane.setDamping(true);
+        this.plane.setDrag(0.99);
+        this.plane.setMaxVelocity(300);
         // INPUT
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     update() {
-        var currentVelocityX = Math.abs(this.plane.body.velocity.x>300?300:this.plane.body.velocity.x)
-        currentVelocityX = currentVelocityX<20?20:currentVelocityX
-        if (this.keySpace.isDown) {
-            this.plane.setVelocityX(currentVelocityX+10)
+        if (this.cursors.left.isDown) {
+            this.plane.body.angularVelocity = -200
+        } else if (this.cursors.right.isDown) {
+            this.plane.body.angularVelocity = +200
         } else {
-            this.plane.setVelocityX(currentVelocityX-20)
+            this.plane.body.angularVelocity = 0
         }
-
+        if (this.keySpace.isDown) {
+            this.physics.velocityFromRotation(this.plane.rotation, 200, this.plane.body.acceleration);
+        } else {
+            this.plane.setAcceleration(0);
+        }
+        this.physics.world.wrap(this.plane, 32)
     }
 }
