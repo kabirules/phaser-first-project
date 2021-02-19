@@ -71,8 +71,7 @@ export class Game extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.input.addPointer();
-        console.log(this.input.pointer1)
+        this.pointer = this.input.activePointer;
 
         // SCORE
         this.hiScore = localStorage.getItem('hiScore')!=undefined?localStorage.getItem('hiScore'):0;
@@ -116,9 +115,12 @@ export class Game extends Phaser.Scene {
                 this.scene.restart();
             }
         }
-        //console.log(this.input.pointer1)
-        if (this.input.pointer1.isDown) {
-            console.log(this.input.pointer1)
+        if (this.pointer.isDown) {
+            if (this.pointer.x > 300) {
+                this.player.setVelocityX(200);
+            } else {
+                this.player.setVelocityX(-200);
+            }
         }
         // ENEMIES MOVEMENT
         this.moveEnemies()

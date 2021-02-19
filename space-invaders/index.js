@@ -1,4 +1,4 @@
-import { Game } from './scenes/space-invaders.js';
+import { Game } from './scenes/game.js';
 import { Home } from './scenes/home.js';
 
 
