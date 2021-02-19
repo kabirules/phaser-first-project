@@ -26,7 +26,7 @@ export class Game extends Phaser.Scene {
         this.isPlayerExplosion = true
         this.isEnemyOnFloor = false
         this.isEnemyStopped = false
-        this.isMobile = true//this.detectPlatform()
+        this.isMobile = this.detectPlatform()
     }
 
     preload ()
@@ -107,19 +107,24 @@ export class Game extends Phaser.Scene {
             }
         }
         if (this.isMobile) {
-            if (this.pointer.isDown && this.canPlayerMove) {
-                if (this.pointer.x > 300) {
-                    this.player.setVelocityX(200)
+            if (this.canPlayerMove) {
+                if (this.pointer.isDown) {
+                    if (this.pointer.x > 300) {
+                        this.player.setVelocityX(200)
+                    } else {
+                        this.player.setVelocityX(-200)
+                    }
                 } else {
-                    this.player.setVelocityX(-200)
+                    this.player.setVelocityX(0)
                 }
-            } else {
-                this.player.setVelocityX(0)
+                // auto shooting
+                if (!this.isBulletAlive || time - this.shootTime > 1000) {
+                    this.playerShoot(time)
+                }            
+            } else if (this.pointer.isDown &&  time - this.restartDelay > 3000) {
+                this.startGame(80,10)
+                this.scene.restart()
             }
-            // auto shooting
-            if (!this.isBulletAlive || time - this.shootTime > 1000) {
-                this.playerShoot(time)
-            }            
         }
         // ENEMIES MOVEMENT
         this.moveEnemies()
