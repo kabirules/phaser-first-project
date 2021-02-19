@@ -26,6 +26,7 @@ export class Game extends Phaser.Scene {
         this.isPlayerExplosion = true
         this.isEnemyOnFloor = false
         this.isEnemyStopped = false
+        this.isMobile = true//this.detectPlatform()
     }
 
     preload ()
@@ -70,7 +71,6 @@ export class Game extends Phaser.Scene {
         // INPUT
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
         this.pointer = this.input.activePointer;
 
         // SCORE
@@ -85,42 +85,41 @@ export class Game extends Phaser.Scene {
         this.livesText = this.add.text(480, 16, 'LIVES ' + this.lives, { fontFamily: 'someFont', fontSize: '24px', fill: '#fff' });
     }
 
-    update (time, delta)
+    update (time)
     {
         this.currentTime = time
         // PLAYER MOVEMENT
         if (this.canPlayerMove) {
-                if (this.cursors.left.isDown)
-            {
-                this.player.setVelocityX(-200);
-            }
-            else if (this.cursors.right.isDown)
-            {
-                this.player.setVelocityX(200);
+            if (this.cursors.left.isDown) {
+                this.player.setVelocityX(-200)
+            } else if (this.cursors.right.isDown) {
+                this.player.setVelocityX(200)
             } else {
-                this.player.setVelocityX(0);
+                this.player.setVelocityX(0)
             }
-            if (this.keySpace.isDown && (!this.isBulletAlive || time - this.shootTime > 1000))
-            {
-                this.sound.play('shot')
-                var bullet = this.physics.add.sprite(this.player.x, this.player.y-16, 'bullet');
-                bullet.setVelocityY(-500)
-                this.shootTime = time
-                this.physics.add.collider(bullet, this.allEnemies, this.enemyHit, null, this);
-                this.isBulletAlive = true
+            if (this.keySpace.isDown && (!this.isBulletAlive || time - this.shootTime > 1000)) {
+                this.playerShoot(time)
             }
         } else { // OR RESTART THE GAME - DISABLED FOR 3 seconds
             if (this.keySpace.isDown &&  time - this.restartDelay > 3000) {
                 this.startGame(80,10)
-                this.scene.restart();
+                this.scene.restart()
             }
         }
-        if (this.pointer.isDown) {
-            if (this.pointer.x > 300) {
-                this.player.setVelocityX(200);
+        if (this.isMobile) {
+            if (this.pointer.isDown && this.canPlayerMove) {
+                if (this.pointer.x > 300) {
+                    this.player.setVelocityX(200)
+                } else {
+                    this.player.setVelocityX(-200)
+                }
             } else {
-                this.player.setVelocityX(-200);
+                this.player.setVelocityX(0)
             }
+            // auto shooting
+            if (!this.isBulletAlive || time - this.shootTime > 1000) {
+                this.playerShoot(time)
+            }            
         }
         // ENEMIES MOVEMENT
         this.moveEnemies()
@@ -161,6 +160,15 @@ export class Game extends Phaser.Scene {
             }
         }
 
+    }
+
+    playerShoot(time) {
+        this.sound.play('shot')
+        var bullet = this.physics.add.sprite(this.player.x, this.player.y-16, 'bullet')
+        bullet.setVelocityY(-500)
+        this.shootTime = time
+        this.physics.add.collider(bullet, this.allEnemies, this.enemyHit, null, this)
+        this.isBulletAlive = true    
     }
 
     enemyHit(bullet, enemy) {
@@ -244,6 +252,13 @@ export class Game extends Phaser.Scene {
         this.restartDelay = 0
         this.allEnemies.setVelocityX(this.enemySpeedX)
         this.livesText.setText('LIVES ' + this.lives)
+    }
+
+    detectPlatform() {
+        return  this.sys.game.device.os.android ||
+                this.sys.game.device.os.iOS ||
+                this.sys.game.device.os.kindle ||
+                this.sys.game.device.os.windowsPhone
     }
 
     createEnemies() {

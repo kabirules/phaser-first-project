@@ -16,6 +16,8 @@ export class Home extends Phaser.Scene {
     create() {
         this.add.text(130, 200, 'RETRO SHOOT\'EM UP', { fontFamily: 'someFont', fontSize: '48px', fill: '#fff' });
         this.add.text(210, 300, 'TAP TO START', { fontFamily: 'someFont', fontSize: '32px', fill: '#fff' });
+        //INPUT
+        this.pointer = this.input.activePointer;
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.anims.create({
             key: 'invader2-anim',
@@ -30,7 +32,7 @@ export class Home extends Phaser.Scene {
     }
 
     update() {
-        if (this.keySpace.isDown) {
+        if (this.keySpace.isDown || this.pointer.isDown) {
             this.scene.start('game')
         }
     }
