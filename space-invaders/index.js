@@ -12,7 +12,12 @@ const config = {
             gravity: { y: 0 }
         }
     },
-    scene: [Home, Game]
+    scene: [Home, Game],
+    scale: {
+        mode: Phaser.Scale.FIT,
+        width: 720,
+        height: 1280
+    }
 };
 
 var game = new Phaser.Game(config);
