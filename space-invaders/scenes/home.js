@@ -2,6 +2,10 @@ export class Home extends Phaser.Scene {
     constructor() {
       super({ key: 'home' });
     }
+
+    init() {
+        this.alreadyStarted=false
+    }
   
     preload() {
         //images
@@ -32,9 +36,16 @@ export class Home extends Phaser.Scene {
     }
 
     update() {
-        if (this.keySpace.isDown || this.pointer.isDown) {
+        if (this.keySpace.isDown && !this.alreadyStarted) {
             this.scene.start('game')
+            this.alreadyStarted = true
         }
+        this.input.on('pointerdown', function(){
+            if (!this.alreadyStarted) {
+                this.scene.start('game')
+                this.alreadyStarted = true
+            }
+        }, this);
     }
 
     //////
