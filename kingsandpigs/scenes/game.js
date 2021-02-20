@@ -36,6 +36,7 @@ export class Game extends Phaser.Scene {
             { frameWidth: 78, frameHeight: 58 }
         );
         this.load.image('terrain', 'assets/14-TileSets/Terrain (32x32).png');
+        this.load.tilemapTiledJSON('map', 'assets/test-level.json');
     }
 
     create() {
@@ -49,12 +50,11 @@ export class Game extends Phaser.Scene {
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
         // FLOOR
-        this.level = [
-            [  0,  1,  2,  3,  4,  5,  6,  7,  8 ]
-        ]
-        this.map = this.make.tilemap({ data: this.level, tileWidth: 128, tileHeight: 128 });
-        this.tiles = this.map.addTilesetImage("terrain");
-        this.layer = this.map.createStaticLayer(0, this.tiles, 10, 500);
+        this.map = this.make.tilemap({ key: "map", tileWidth: 64, tileHeight: 64 });
+        this.tileset = this.map.addTilesetImage("Terrain (32x32)", "terrain");
+        this.layer = this.map.createStaticLayer(0, this.tileset, 0, 0);
+        this.layer.setCollisionByExclusion([-1]);
+        this.physics.add.collider(this.player.sprite(), this.layer);
     }
 
     update(time) {
@@ -77,7 +77,7 @@ export class Game extends Phaser.Scene {
         if (this.cursors.down.isDown) {
             this.player.ground()
         }        
-        if (!playerSprite.body.touching.down) {
+        if (!playerSprite.body.onFloor()) {
             if (playerSprite.body.velocity.y < 0) {
                 this.player.jumpUp()
             } else {

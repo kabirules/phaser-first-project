@@ -73,8 +73,8 @@ export class Player {
     }
 
     jump() {
-        if (this.player.body.touching.down) {
-            this.player.setVelocityY(-200)
+        if (this.player.body.onFloor()) {
+            this.player.setVelocityY(-250)
         }
     }
 
