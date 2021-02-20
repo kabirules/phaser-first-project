@@ -153,7 +153,7 @@ export class Game extends Phaser.Scene {
         // ENEMIES REACHED FLOOR?
         var isEnemyOnFloor = false
         this.allEnemies.children.iterate(function (child) {
-            if (child.y > 550) {
+            if (child.y > 550 && child.active) {
                 isEnemyOnFloor = true
             }
         })
