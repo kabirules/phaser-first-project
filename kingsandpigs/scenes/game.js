@@ -49,11 +49,15 @@ export class Game extends Phaser.Scene {
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
         // FLOOR
-        this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(600, 400, 'terrain');
+        var map = this.make.tilemap({ width: 608, height: 416, tileWidth: 19, tileHeight: 13 });
+        var tiles = map.addTilesetImage('terrain', null, 19, 13);
+        var layer = map.createBlankLayer('layer1', tiles);
+        layer.randomize(0, 0, map.width, map.height, [ 0, 1, 2, 3, 4, 5, 6, 7 ]);
+        //this.platforms = this.physics.add.staticGroup();
+        //this.platforms.create(600, 400, 'terrain');
         //this.floor = this.physics.add.sprite(385, 430, 'atlas');
         //this.floor.setCollideWorldBounds(true)
-        this.physics.add.collider(this.player.sprite(), this.platforms);
+        //this.physics.add.collider(this.player.sprite(), this.platforms);
     }
 
     update(time) {
