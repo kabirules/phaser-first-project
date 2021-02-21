@@ -12,12 +12,12 @@ export class Game extends Phaser.Scene {
 
     preload() {
         this.load.spritesheet('playerIdle', 
-            'assets/01-King Human/Idle (78x58).png',
-            { frameWidth: 78, frameHeight: 58 }
+            'assets/01-King Human/Idle (78x58)_cropped2.png',
+            { frameWidth: 37, frameHeight: 30, margin: 0 }
         );
         this.load.spritesheet('playerRun', 
             'assets/01-King Human/Run (78x58).png',
-            { frameWidth: 78, frameHeight: 58 }
+            { frameWidth: 78, frameHeight: 58}
         );
         this.load.spritesheet('playerAttack', 
             'assets/01-King Human/Attack (78x58).png',
@@ -37,6 +37,7 @@ export class Game extends Phaser.Scene {
         );
         this.load.image('terrain', 'assets/14-TileSets/Terrain (32x32).png');
         this.load.tilemapTiledJSON('map', 'assets/test-level.json');
+        this.load.image('block', 'assets/14-TileSets/block.png');
     }
 
     create() {
@@ -50,11 +51,19 @@ export class Game extends Phaser.Scene {
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
         // FLOOR
+        /*
         this.map = this.make.tilemap({ key: "map", tileWidth: 64, tileHeight: 64 });
         this.tileset = this.map.addTilesetImage("Terrain (32x32)", "terrain");
         this.layer = this.map.createStaticLayer(0, this.tileset, 0, 0);
         this.layer.setCollisionByExclusion([-1]);
         this.physics.add.collider(this.player.sprite(), this.layer);
+        */
+       this.platforms = this.physics.add.staticGroup();
+       this.platforms.create(400, 568, 'block').setScale(2).refreshBody();
+       this.platforms.create(600, 400, 'block');
+       this.platforms.create(50, 250, 'block');
+       this.platforms.create(750, 220, 'block');
+       this.physics.add.collider(this.player.sprite(), this.platforms);
     }
 
     update(time) {
