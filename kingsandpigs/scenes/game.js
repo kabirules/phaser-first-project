@@ -12,12 +12,12 @@ export class Game extends Phaser.Scene {
 
     preload() {
         this.load.spritesheet('playerIdle', 
-            'assets/01-King Human/Idle (78x58)_cropped2.png',
-            { frameWidth: 37, frameHeight: 30, margin: 0 }
+            'assets/01-King Human/Idle (78x58).png',
+            { frameWidth: 37, frameHeight: 28, spacing: 41}
         );
         this.load.spritesheet('playerRun', 
             'assets/01-King Human/Run (78x58).png',
-            { frameWidth: 78, frameHeight: 58}
+            { frameWidth: 37, frameHeight: 28, spacing: 41}
         );
         this.load.spritesheet('playerAttack', 
             'assets/01-King Human/Attack (78x58).png',
@@ -25,15 +25,15 @@ export class Game extends Phaser.Scene {
         );
         this.load.spritesheet('playerJump', 
             'assets/01-King Human/Jump (78x58).png',
-            { frameWidth: 78, frameHeight: 58 }
+            { frameWidth: 37, frameHeight: 29 }
         );
         this.load.spritesheet('playerFall', 
             'assets/01-King Human/Fall (78x58).png',
-            { frameWidth: 78, frameHeight: 58 }
+            { frameWidth: 38, frameHeight: 29 }
         );
         this.load.spritesheet('playerGround', 
             'assets/01-King Human/Ground (78x58).png',
-            { frameWidth: 78, frameHeight: 58 }
+            { frameWidth: 37, frameHeight: 25 }
         );
         this.load.image('terrain', 'assets/14-TileSets/Terrain (32x32).png');
         this.load.tilemapTiledJSON('map', 'assets/test-level.json');
