@@ -67,10 +67,6 @@ export class Game extends Phaser.Scene {
         } else {
             this.player.stop()
         }
-        if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
-            this.player.attack()
-            this.playerAttackTime = time
-        }
         if (this.cursors.up.isDown) {
             this.player.jump()
         }
@@ -84,5 +80,9 @@ export class Game extends Phaser.Scene {
                 this.player.jumpDown()
             }
         }
+        if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
+            this.player.attack()
+            this.playerAttackTime = time
+        }        
     }
 }
