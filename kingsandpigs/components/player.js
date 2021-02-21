@@ -5,9 +5,9 @@ export class Player {
     }
 
     create() {
-        this.player = this.physics.add.sprite(640, 160, 'player');
-        this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(true)
+        this.playerSprite = this.physics.add.sprite(640, 160, 'player');
+        this.playerSprite.setBounce(0.2);
+        this.playerSprite.setCollideWorldBounds(true)
         this.anims.create({
             key: 'playerIdle',
             frames: this.anims.generateFrameNumbers('playerIdle', { start: 0, end: 10 }),
@@ -48,47 +48,47 @@ export class Player {
     }
 
     sprite() {
-        return this.player
+        return this.playerSprite
     }
 
     moveLeft() {
-        this.player.setVelocityX(-200)
-        this.player.scaleX = -1
-        this.player.anims.play('playerRun', true)
+        this.playerSprite.setVelocityX(-200)
+        this.playerSprite.scaleX = -1
+        this.playerSprite.anims.play('playerRun', true)
     }
 
     moveRight() {
-        this.player.setVelocityX(200)
-        this.player.scaleX = Math.abs(this.player.scaleX)
-        this.player.anims.play('playerRun', true)
+        this.playerSprite.setVelocityX(200)
+        this.playerSprite.scaleX = Math.abs(this.playerSprite.scaleX)
+        this.playerSprite.anims.play('playerRun', true)
     }
 
     stop() {
-        this.player.setVelocityX(0)
-        this.player.anims.play('playerIdle', true)
+        this.playerSprite.setVelocityX(0)
+        this.playerSprite.anims.play('playerIdle', true)
     }
 
     attack() {
-        this.player.anims.play('playerAttack', true)
+        this.playerSprite.anims.play('playerAttack', true)
     }
 
     jump() {
-        if (this.player.body.onFloor()) {
-            this.player.setVelocityY(-250)
+        if (this.playerSprite.body.onFloor()) {
+            this.playerSprite.setVelocityY(-350)
         }
     }
 
     jumpUp() {
-        this.player.anims.play('playerJumpUp', true)
+        this.playerSprite.anims.play('playerJumpUp', true)
     }
 
     jumpDown() {
-        this.player.anims.play('playerJumpDown', true)
+        this.playerSprite.anims.play('playerJumpDown', true)
     }
 
     ground() {
-        this.player.setVelocityX(0)
-        this.player.anims.play('playerGround', true)
+        this.playerSprite.setVelocityX(0)
+        this.playerSprite.anims.play('playerGround', true)
     }
 
   }
