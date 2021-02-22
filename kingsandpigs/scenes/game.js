@@ -1,4 +1,5 @@
 import { Player } from '../components/player.js';
+import { KingPig } from '../components/kingPig.js';
 
 export class Game extends Phaser.Scene {
 
@@ -11,9 +12,10 @@ export class Game extends Phaser.Scene {
     }
 
     preload() {
+        // player spritesheets
         this.load.spritesheet('playerIdle', 
             'assets/01-King Human/Idle (78x58).png',
-            { frameWidth: 37, frameHeight: 28, spacing: 41}
+            { frameWidth: 37, frameHeight: 32, spacing: 41}
         );
         this.load.spritesheet('playerRun', 
             'assets/01-King Human/Run (78x58).png',
@@ -35,15 +37,27 @@ export class Game extends Phaser.Scene {
             'assets/01-King Human/Ground (78x58).png',
             { frameWidth: 37, frameHeight: 25 }
         );
+        // king pig spritesheets
+        this.load.spritesheet('kingPigIdle', 
+            'assets/02-King Pig/Idle (38x28).png',
+            { frameWidth: 18, frameHeight: 32, spacing: 20}
+        );
+        // level
         this.load.image('terrain', 'assets/14-TileSets/Terrain (32x32).png');
         this.load.tilemapTiledJSON('map', 'assets/test-level.json');
     }
 
     create() {
+        this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#999999");
         // PLAYER
         this.player = new Player(this.physics, this.anims)
         this.player.create()
         this.player.stop()
+
+        // KING PIG
+        this.kingPig = new KingPig(this.physics, this.anims)
+        this.kingPig.create()
+        this.kingPig.stop()
 
         // INPUT
         this.cursors = this.input.keyboard.createCursorKeys()
@@ -55,6 +69,7 @@ export class Game extends Phaser.Scene {
         this.layer = this.map.createStaticLayer(0, this.tileset, 0, 0);
         this.layer.setCollisionByExclusion([-1]);
         this.physics.add.collider(this.player.sprite(), this.layer);
+        this.physics.add.collider(this.kingPig.sprite(), this.layer);
     }
 
     update(time) {
@@ -72,7 +87,8 @@ export class Game extends Phaser.Scene {
         }
         if (this.cursors.down.isDown) {
             this.player.ground()
-        }        
+        }   
+        /*     
         if (!playerSprite.body.onFloor()) {
             if (playerSprite.body.velocity.y < 0) {
                 this.player.jumpUp()
@@ -80,6 +96,7 @@ export class Game extends Phaser.Scene {
                 this.player.jumpDown()
             }
         }
+        */
         if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
             this.player.attack()
             this.playerAttackTime = time
