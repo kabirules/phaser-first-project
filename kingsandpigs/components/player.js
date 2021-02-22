@@ -52,12 +52,13 @@ export class Player {
     }
 
     moveLeft() {
+        this.playerSprite.flipX = true
         this.playerSprite.setVelocityX(-200)
-        this.playerSprite.scaleX = -1
         this.playerSprite.anims.play('playerRun', true)
     }
 
     moveRight() {
+        this.playerSprite.flipX = false
         this.playerSprite.setVelocityX(200)
         this.playerSprite.scaleX = Math.abs(this.playerSprite.scaleX)
         this.playerSprite.anims.play('playerRun', true)
