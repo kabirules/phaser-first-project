@@ -23,7 +23,7 @@ export class Player {
         this.anims.create({
             key: 'playerAttack',
             frames: this.anims.generateFrameNumbers('playerAttack', { start: 0, end: 2 }),
-            frameRate: 15,
+            frameRate: 1,
             repeat: -1
         })
         this.anims.create({

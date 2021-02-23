@@ -14,28 +14,28 @@ export class Game extends Phaser.Scene {
     preload() {
         // player spritesheets
         this.load.spritesheet('playerIdle', 
-            'assets/01-King Human/Idle (78x58).png',
+            'assets/01-King Human/Idle.png',
             { frameWidth: 37, frameHeight: 32, spacing: 41}
         );
         this.load.spritesheet('playerRun', 
-            'assets/01-King Human/Run (78x58).png',
-            { frameWidth: 37, frameHeight: 28, spacing: 41}
+            'assets/01-King Human/Run.png',
+            { frameWidth: 37, frameHeight: 32, spacing: 41}
         );
         this.load.spritesheet('playerAttack', 
-            'assets/01-King Human/Attack (78x58).png',
-            { frameWidth: 78, frameHeight: 58 }
+            'assets/01-King Human/Attack (78x58)-.png',
+            { frameWidth: 86, frameHeight: 58 }
         );
         this.load.spritesheet('playerJump', 
-            'assets/01-King Human/Jump (78x58).png',
-            { frameWidth: 37, frameHeight: 29 }
+            'assets/01-King Human/Jump.png',
+            { frameWidth: 37, frameHeight: 32 }
         );
         this.load.spritesheet('playerFall', 
-            'assets/01-King Human/Fall (78x58).png',
-            { frameWidth: 38, frameHeight: 29 }
+            'assets/01-King Human/Fall.png',
+            { frameWidth: 38, frameHeight: 32 }
         );
         this.load.spritesheet('playerGround', 
-            'assets/01-King Human/Ground (78x58).png',
-            { frameWidth: 37, frameHeight: 25 }
+            'assets/01-King Human/Ground.png',
+            { frameWidth: 37, frameHeight: 32 }
         );
         // king pig spritesheets
         this.load.spritesheet('kingPigIdle', 
@@ -88,7 +88,6 @@ export class Game extends Phaser.Scene {
         if (this.cursors.down.isDown) {
             this.player.ground()
         }   
-        /*     
         if (!playerSprite.body.onFloor()) {
             if (playerSprite.body.velocity.y < 0) {
                 this.player.jumpUp()
@@ -96,7 +95,6 @@ export class Game extends Phaser.Scene {
                 this.player.jumpDown()
             }
         }
-        */
         if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
             this.player.attack()
             this.playerAttackTime = time
