@@ -22,8 +22,8 @@ export class Game extends Phaser.Scene {
             { frameWidth: 37, frameHeight: 32, spacing: 41}
         );
         this.load.spritesheet('playerAttack', 
-            'assets/01-King Human/Attack (78x58)-.png',
-            { frameWidth: 86, frameHeight: 58 }
+            'assets/01-King Human/Attack (78x58).png',
+            { frameWidth: 95, frameHeight: 58 }
         );
         this.load.spritesheet('playerJump', 
             'assets/01-King Human/Jump.png',
@@ -31,7 +31,7 @@ export class Game extends Phaser.Scene {
         );
         this.load.spritesheet('playerFall', 
             'assets/01-King Human/Fall.png',
-            { frameWidth: 38, frameHeight: 32 }
+            { frameWidth: 37, frameHeight: 32 }
         );
         this.load.spritesheet('playerGround', 
             'assets/01-King Human/Ground.png',
