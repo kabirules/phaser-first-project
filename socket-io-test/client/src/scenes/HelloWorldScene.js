@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import io from 'socket.io-client';
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -18,6 +19,12 @@ export default class HelloWorldScene extends Phaser.Scene
 
     create()
     {
+        this.socket = io('http://localhost:3000');
+
+        this.socket.on('connect', function () {
+        	console.log('Connected!');
+        });
+        
         this.add.image(400, 300, 'sky')
 
         const particles = this.add.particles('red')
