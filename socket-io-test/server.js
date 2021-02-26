@@ -4,11 +4,22 @@ const io = require('socket.io')(http, {cors: {
     origin: "http://localhost:8000",
     methods: ["GET", "POST"]
   }});
+let players = [];
 
 io.on('connection', function (socket) {
     console.log('A user connected: ' + socket.id);
 
+    players.push(socket.id);
+    console.log('players connected: ' + players.length)
+
+    if (players.length === 1) {
+        io.emit('isPlayerA');
+        console.log('isPlayerA emitted')
+    };    
+
     socket.on('disconnect', function () {
+        players = players.filter(element => element == socket.id)
+        console.log('players connected: ' + players.length)
         console.log('A user disconnected: ' + socket.id);
     });
 });
