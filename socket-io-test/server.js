@@ -22,6 +22,11 @@ io.on('connection', function (socket) {
         console.log('players connected: ' + players.length)
         console.log('A user disconnected: ' + socket.id);
     });
+
+    socket.on('scoreUpdated', function (isPlayerA) {
+        console.log('update the score of the player A? -> ' + isPlayerA)
+        io.emit('updateScore')
+    })
 });
 http.listen(3000, function () {
     console.log('Server started!');
