@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import FirebaseConfig from '../config/firebaseConfig'
+import { FirebaseConfig } from '../config/firebaseConfig.js';
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -15,8 +15,9 @@ export default class HelloWorldScene extends Phaser.Scene
     }
 
     create() {
-        console.log(FirebaseConfig.firebaseConfig)
-        var firebaseApp = firebase.initializeApp(FirebaseConfig.firebaseConfig);
+        var firebaseConfig = new FirebaseConfig()
+        firebaseConfig.create()
+        var firebaseApp = firebase.initializeApp(firebaseConfig.getConfig());
         var provider = new firebase.auth.GoogleAuthProvider();
 
         const googleButton = this.add.text(350, 300, 'Google login', { fill: '#0f0' });
@@ -33,7 +34,7 @@ export default class HelloWorldScene extends Phaser.Scene
             // The signed-in user info.
             var user = result.user;
             // ...
-            console.log(user);
+            console.log(user.displayName);
         }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
