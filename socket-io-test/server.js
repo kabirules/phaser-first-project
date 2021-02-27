@@ -18,16 +18,22 @@ io.on('connection', function (socket) {
     };    
 
     socket.on('disconnect', function () {
-        players = players.filter(element => element == socket.id)
-        console.log('players connected: ' + players.length)
+        players = players.filter(element => element != socket.id)
         console.log('A user disconnected: ' + socket.id);
+        console.log('players connected: ' + players.length)
     });
 
-    socket.on('scoreUpdated', function (isPlayerA) {
-        console.log('update the score of the player A? -> ' + isPlayerA)
-        io.emit('updateScore')
+    socket.on('scoreUpdated', function (isPlayerA, score) {
+        if (isPlayerA) {
+            console.log('Player A score has been updated. Now we have to update the score of the Player A in the Player B screen')
+        } else {
+            console.log('Player B score has been updated. Now we have to update the score of the Player B in the Player A screen')
+        }
+        //emitting the score updating of the other player
+        io.emit('updateScore', isPlayerA, score)
     })
 });
+
 http.listen(3000, function () {
     console.log('Server started!');
 });

@@ -11,52 +11,64 @@ export default class HelloWorldScene extends Phaser.Scene
 	preload()
     {
         this.load.setBaseURL('http://labs.phaser.io')
-
-        this.load.image('sky', 'assets/skies/space3.png')
         this.load.image('logo', 'assets/sprites/phaser3-logo.png')
-        this.load.image('red', 'assets/particles/red.png')
-
     }
 
     create()
     {
-        this.scoreAText = ""
-        this.scoreBText = ""
         this.scoreA = 0
         this.scoreB = 0
         
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
-        this.scoreAText = this.add.text(16, 16, 'score: 0', { fontSize: '16px', fill: '#fff' });
-        this.scoreBText = this.add.text(516, 16, 'score: 0', { fontSize: '16px', fill: '#fff' });
+        this.scoreAText = this.add.text(16, 16, 'player A score: 0', { fontSize: '16px', fill: '#fff' })
+        this.scoreBText = this.add.text(516, 16, 'player B score: 0', { fontSize: '16px', fill: '#fff' })
 
-        this.isPlayerA = false;
+        self.isPlayerA = false;
         this.socket = io('http://localhost:3000');
+        this.socket.updateScores = false
 
         this.socket.on('connect', function () {
         	console.log('Connected!');
         });
 
 		this.socket.on('isPlayerA', function () {
-            console.log('isPlayerA emission received!');
+            console.log('You are the PlayerA');
         	self.isPlayerA = true;
         })
 
         const logo = this.physics.add.image(400, 100, 'logo')
 
-
-        this.socket.on('updateScore', function () {
-            console.log('updateScore')
-            self.scoreB = self.scoreB + 1;
-        	self.scoreBText.setText('score: ' + self.scoreB)
+        this.socket.on('updateScore', function (isPlayerA, score) {
+            this.isPlayerA = isPlayerA
+            this.score = score
+            this.updateScores = true
         })
 
     }
 
     update() {
         if (this.keySpace.isDown) {
-            this.scoreA = this.scoreA + 1;
-            this.scoreAText.setText('score: ' + this.scoreA)
-            this.socket.emit("scoreUpdated", this.isPlayerA);
+            if (self.isPlayerA) {
+                this.scoreA = this.scoreA + 1;
+                this.scoreAText.setText('player A score: ' + this.scoreA)
+                this.socket.emit("scoreUpdated", true, this.scoreA);
+            } else {
+                this.scoreB = this.scoreB + 1;
+                this.scoreBText.setText('player B score: ' + this.scoreB)
+                this.socket.emit("scoreUpdated", false, this.scoreB);
+            }
+        }
+
+        if (this.socket.updateScores) {
+            if (this.socket.isPlayerA && !self.isPlayerA) {
+                this.scoreA = this.socket.score
+                this.scoreAText.setText('player A score: ' + this.scoreA)
+            }
+            if (!this.socket.isPlayerA && self.isPlayerA) {
+                this.scoreB = this.socket.score
+                this.scoreBText.setText('player B score: ' + this.scoreB)
+            }
+            this.socket.updateScores = false
         }
     }
 }
