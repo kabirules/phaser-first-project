@@ -44,7 +44,7 @@ export class Game extends Phaser.Scene {
         );
         this.load.spritesheet('kingPigHit', 
             'assets/02-King Pig/Hit (38x28).png',
-            { frameWidth: 38, frameHeight: 32}
+            { frameWidth: 18, frameHeight: 28, spacing: 19}
         );        
         // level
         this.load.image('terrain', 'assets/14-TileSets/tileset.png');
