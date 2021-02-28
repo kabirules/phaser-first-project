@@ -42,6 +42,10 @@ export class Game extends Phaser.Scene {
             'assets/02-King Pig/Idle (38x28).png',
             { frameWidth: 18, frameHeight: 32, spacing: 20}
         );
+        this.load.spritesheet('kingPigHit', 
+            'assets/02-King Pig/Hit (38x28).png',
+            { frameWidth: 38, frameHeight: 32}
+        );        
         // level
         this.load.image('terrain', 'assets/14-TileSets/tileset.png');
         this.load.tilemapTiledJSON('map', 'assets/level2.json');
@@ -73,6 +77,7 @@ export class Game extends Phaser.Scene {
         // COLLISIONS
         this.physics.add.collider(this.player.sprite(), this.layer);
         this.physics.add.collider(this.kingPig.sprite(), this.layer);
+        this.physics.add.collider(this.player.sprite(), this.kingPig.sprite(),  this.enemyHit, null, this);
     }
 
     update(time) {
@@ -102,5 +107,9 @@ export class Game extends Phaser.Scene {
             this.player.attack()
             this.playerAttackTime = time
         }        
+    }
+
+    enemyHit(player, kingPig) {
+        this.kingPig.hit()
     }
 }
