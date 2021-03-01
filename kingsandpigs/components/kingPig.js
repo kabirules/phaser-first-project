@@ -5,7 +5,7 @@ export class KingPig {
     }
 
     create() {
-        this.kingPigSprite = this.physics.add.sprite(840, 160, 'kingPig');
+        this.kingPigSprite = this.physics.add.sprite(1100, 160, 'kingPig');
         this.kingPigSprite.setBounce(0.2);
         this.kingPigSprite.setCollideWorldBounds(true)
         this.anims.create({
@@ -41,8 +41,16 @@ export class KingPig {
         this.kingPigSprite.setVelocityX(0)
         this.kingPigSprite.anims.play('kingPigIdle', true)
     }
-    run() {
+
+    runLeft() {
+        this.kingPigSprite.flipX = false
         this.kingPigSprite.setVelocityX(-50)
         this.kingPigSprite.anims.play('kingPigRun', true)
-    }    
+    }
+
+    runRight() {
+        this.kingPigSprite.flipX = true
+        this.kingPigSprite.setVelocityX(50)
+        this.kingPigSprite.anims.play('kingPigRun', true)
+    }
   }

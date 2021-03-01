@@ -53,6 +53,9 @@ export class Game extends Phaser.Scene {
         // level
         this.load.image('terrain', 'assets/14-TileSets/tileset.png');
         this.load.tilemapTiledJSON('map', 'assets/level2.json');
+        //
+        this.enemyPatrolTimer = 0
+        this.enemyPatrolTime = 4000
     }
 
     create() {
@@ -72,7 +75,7 @@ export class Game extends Phaser.Scene {
         // KING PIG
         this.kingPig = new KingPig(this.physics, this.anims)
         this.kingPig.create()
-        this.kingPig.run()
+        this.kingPig.runLeft()
 
         // INPUT
         this.cursors = this.input.keyboard.createCursorKeys()
@@ -84,7 +87,7 @@ export class Game extends Phaser.Scene {
         this.physics.add.collider(this.player.sprite(), this.kingPig.sprite(),  this.enemyHit, null, this);
     }
 
-    update(time) {
+    update(time, delta) {
         // PLAYER MOVEMENT
         var playerSprite = this.player.sprite()
         if (this.cursors.left.isDown) {
@@ -110,7 +113,18 @@ export class Game extends Phaser.Scene {
         if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
             this.player.attack()
             this.playerAttackTime = time
-        }        
+        }
+        //ENENMY PATROL
+        this.enemyPatrolTimer += delta;
+        if (this.enemyPatrolTimer > this.enemyPatrolTime) {
+            if (this.kingPig.sprite().body.velocity.x < 0) {
+                this.kingPig.runRight()
+            } else {
+                this.kingPig.runLeft()
+            }
+            this.enemyPatrolTimer = this.enemyPatrolTimer - this.enemyPatrolTime
+        }
+
     }
 
     enemyHit(player, kingPig) {
