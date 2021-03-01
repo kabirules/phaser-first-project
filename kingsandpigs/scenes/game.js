@@ -44,7 +44,11 @@ export class Game extends Phaser.Scene {
         );
         this.load.spritesheet('kingPigHit', 
             'assets/02-King Pig/Hit (38x28).png',
-            { frameWidth: 18, frameHeight: 28, spacing: 19}
+            { frameWidth: 18, frameHeight: 32, spacing: 19}
+        );
+        this.load.spritesheet('kingPigRun', 
+            'assets/02-King Pig/Run (38x28).png',
+            { frameWidth: 19, frameHeight: 32, spacing: 1}
         );        
         // level
         this.load.image('terrain', 'assets/14-TileSets/tileset.png');
@@ -68,7 +72,7 @@ export class Game extends Phaser.Scene {
         // KING PIG
         this.kingPig = new KingPig(this.physics, this.anims)
         this.kingPig.create()
-        this.kingPig.stop()
+        this.kingPig.run()
 
         // INPUT
         this.cursors = this.input.keyboard.createCursorKeys()
@@ -112,4 +116,5 @@ export class Game extends Phaser.Scene {
     enemyHit(player, kingPig) {
         this.kingPig.hit()
     }
+
 }

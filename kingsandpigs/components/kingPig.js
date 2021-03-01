@@ -19,6 +19,12 @@ export class KingPig {
             frames: this.anims.generateFrameNumbers('kingPigHit', { start: 0, end: 1 }),
             frameRate: 15,
             repeat: -1
+        })
+        this.anims.create({
+            key: 'kingPigRun',
+            frames: this.anims.generateFrameNumbers('kingPigRun', { start: 0, end: 5 }),
+            frameRate: 15,
+            repeat: -1
         })        
     }
 
@@ -35,4 +41,8 @@ export class KingPig {
         this.kingPigSprite.setVelocityX(0)
         this.kingPigSprite.anims.play('kingPigIdle', true)
     }
+    run() {
+        this.kingPigSprite.setVelocityX(-50)
+        this.kingPigSprite.anims.play('kingPigRun', true)
+    }    
   }
