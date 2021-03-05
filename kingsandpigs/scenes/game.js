@@ -63,8 +63,10 @@ export class Game extends Phaser.Scene {
         // FLOOR
         this.map = this.make.tilemap({ key: "map", tileWidth: 64, tileHeight: 64 });
         this.tileset = this.map.addTilesetImage("tileset", "terrain");
-        this.backgroundLayer = this.map.createStaticLayer('Tile Layer 1', this.tileset, 0, 0);
+        this.bounds = this.map.createStaticLayer('bounds', this.tileset, 0, 0);
+        this.backgroundLayer = this.map.createStaticLayer('background', this.tileset, 0, 0);
         this.layer = this.map.createStaticLayer('platforms', this.tileset, 0, 0);
+        this.bounds.setCollisionByExclusion([-1])
         this.layer.setCollisionByExclusion([-1]);
        
         // PLAYER
@@ -84,6 +86,8 @@ export class Game extends Phaser.Scene {
         // COLLISIONS
         this.physics.add.collider(this.player.sprite(), this.layer);
         this.physics.add.collider(this.kingPig.sprite(), this.layer);
+        this.physics.add.collider(this.player.sprite(), this.bounds);
+        this.physics.add.collider(this.kingPig.sprite(), this.bounds);
         this.physics.add.collider(this.player.sprite(), this.kingPig.sprite(),  this.enemyHit, null, this);
     }
 
