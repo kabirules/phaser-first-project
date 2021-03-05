@@ -5,9 +5,11 @@ export class Player {
     }
 
     create() {
-        this.playerSprite = this.physics.add.sprite(640, 160, 'player');
+        this.playerSprite = this.physics.add.sprite(100, 500, 'player');
         this.playerSprite.setBounce(0.2);
         this.playerSprite.setCollideWorldBounds(true)
+        this.isDead = false
+        this.hasWon = false
         this.anims.create({
             key: 'playerIdle',
             frames: this.anims.generateFrameNumbers('playerIdle', { start: 0, end: 10 }),
@@ -44,6 +46,12 @@ export class Player {
             frameRate: 15,
             repeat: -1
         })
+        this.anims.create({
+            key: 'playerDead',
+            frames: this.anims.generateFrameNumbers('playerDead', { start: 0, end: 3 }),
+            frameRate: 15,
+            repeat: 0
+        })        
         
     }
 
@@ -90,6 +98,20 @@ export class Player {
     ground() {
         this.playerSprite.setVelocityX(0)
         this.playerSprite.anims.play('playerGround', true)
+    }
+
+    dead() {
+        this.playerSprite.setVelocityX(0)
+        this.playerSprite.anims.play('playerDead', true)
+        this.isDead = true
+    }
+
+    isDead() {
+        return this.isDead
+    }
+
+    hasWon() {
+        return this.hasWon
     }
 
   }

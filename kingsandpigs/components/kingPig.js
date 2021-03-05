@@ -1,11 +1,13 @@
 export class KingPig {
-    constructor(physics, anims) {
+    constructor(x, y, physics, anims) {
         this.physics = physics
         this.anims = anims
+        this.x = x
+        this.y = y
     }
 
     create() {
-        this.kingPigSprite = this.physics.add.sprite(1100, 160, 'kingPig');
+        this.kingPigSprite = this.physics.add.sprite(this.x, this.y, 'kingPig');
         this.kingPigSprite.setBounce(0.2);
         this.kingPigSprite.setCollideWorldBounds(true)
         this.anims.create({
