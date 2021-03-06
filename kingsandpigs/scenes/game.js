@@ -116,10 +116,10 @@ export class Game extends Phaser.Scene {
         this.physics.add.collider(this.kingPig3.sprite(), this.bounds);
         this.physics.add.collider(this.player.sprite(), this.bounds);
         this.physics.add.overlap(this.player.sprite(), this.exit, this.playerExited, null, this);
-        this.physics.add.collider(this.player.sprite(), this.kingPig.sprite(),  this.enemyHit, null, this);
-        this.physics.add.collider(this.player.sprite(), this.kingPig1.sprite(),  this.enemyHit, null, this);
-        this.physics.add.collider(this.player.sprite(), this.kingPig2.sprite(),  this.enemyHit, null, this);
-        this.physics.add.collider(this.player.sprite(), this.kingPig3.sprite(),  this.enemyHit, null, this);
+        this.physics.add.overlap(this.player.sprite(), this.kingPig.sprite(),  this.enemyHit, null, this);
+        this.physics.add.overlap(this.player.sprite(), this.kingPig1.sprite(),  this.enemyHit, null, this);
+        this.physics.add.overlap(this.player.sprite(), this.kingPig2.sprite(),  this.enemyHit, null, this);
+        this.physics.add.overlap(this.player.sprite(), this.kingPig3.sprite(),  this.enemyHit, null, this);
 
         //TEXT
         this.text = this.add.text(420, 200, '', { fontSize: '64px', fill: '#000' });
@@ -187,10 +187,14 @@ export class Game extends Phaser.Scene {
 
     }
 
-    enemyHit() {
-        if (!this.player.isDead) {
-            this.player.dead()
-            this.playerDeadTime = this.time
+    enemyHit(player, kingPig) {
+        if (Math.abs(player.x - kingPig.x) < 20
+            &&
+            Math.abs(player.y - kingPig.y) < 20) {
+                if (!this.player.isDead) {
+                    this.player.dead()
+                    this.playerDeadTime = this.time
+                }
         }
     }
 
