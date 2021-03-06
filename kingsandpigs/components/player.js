@@ -8,8 +8,10 @@ export class Player {
         this.playerSprite = this.physics.add.sprite(100, 500, 'player');
         this.playerSprite.setBounce(0.2);
         this.playerSprite.setCollideWorldBounds(true)
+        this.playerSprite.body.width = 55
         this.isDead = false
         this.hasWon = false
+        this.isAttacking = false
         this.anims.create({
             key: 'playerIdle',
             frames: this.anims.generateFrameNumbers('playerIdle', { start: 0, end: 10 }),

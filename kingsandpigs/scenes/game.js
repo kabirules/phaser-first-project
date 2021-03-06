@@ -151,8 +151,12 @@ export class Game extends Phaser.Scene {
                 }
             }
             if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
+                this.player.isAttacking = true
                 this.player.attack()
                 this.playerAttackTime = time
+            }
+            if (time - this.playerAttackTime > 500) {
+                this.player.isAttacking = false
             }
         }
         //ENEMY PATROL
@@ -188,6 +192,11 @@ export class Game extends Phaser.Scene {
     }
 
     enemyHit(player, kingPig) {
+        // first check if player is attacking
+        if (this.player.isAttacking) {
+            console.log('enemy should be dead')
+            return
+        }
         if (Math.abs(player.x - kingPig.x) < 20
             &&
             Math.abs(player.y - kingPig.y) < 20) {
