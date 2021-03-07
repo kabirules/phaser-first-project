@@ -53,6 +53,10 @@ export class Game extends Phaser.Scene {
         this.load.spritesheet('kingPigRun', 
             'assets/02-King Pig/Run (38x28).png',
             { frameWidth: 19, frameHeight: 32, spacing: 1}
+        );
+        this.load.spritesheet('kingPigDead', 
+            'assets/02-King Pig/Dead.png',
+            { frameWidth: 22, frameHeight: 28, spacing: 5}
         );        
         // level
         this.load.image('terrain', 'assets/14-TileSets/tileset.png');
@@ -160,19 +164,36 @@ export class Game extends Phaser.Scene {
             }
         }
         //ENEMY PATROL
-        this.enemyPatrolTimer += delta;
+        this.enemyPatrolTimer += delta
         if (this.enemyPatrolTimer > this.enemyPatrolTime) {
-            if (this.kingPig.sprite().body.velocity.x < 0) {
-                this.kingPig.runRight()
-                this.kingPig1.runRight()
-                this.kingPig2.runRight()
-                this.kingPig3.runRight()
-            } else {
-                this.kingPig.runLeft()
-                this.kingPig1.runLeft()
-                this.kingPig2.runLeft()
-                this.kingPig3.runLeft()
+            if (this.kingPig.sprite().active) {
+                if (this.kingPig.sprite().body.velocity.x < 0) {
+                    this.kingPig.runRight()
+                } else {
+                    this.kingPig.runLeft()
+                }
             }
+            if (this.kingPig1.sprite().active) {
+                if (this.kingPig1.sprite().body.velocity.x < 0) {
+                    this.kingPig1.runRight()
+                } else {
+                    this.kingPig1.runLeft()
+                }
+            }
+            if (this.kingPig2.sprite().active) {
+                if (this.kingPig2.sprite().body.velocity.x < 0) {
+                    this.kingPig2.runRight()
+                } else {
+                    this.kingPig2.runLeft()
+                }
+            }
+            if (this.kingPig3.sprite().active) {
+                if (this.kingPig3.sprite().body.velocity.x < 0) {
+                    this.kingPig3.runRight()
+                } else {
+                    this.kingPig3.runLeft()
+                }
+            }                                    
             this.enemyPatrolTimer = this.enemyPatrolTimer - this.enemyPatrolTime
         }
         //RESTART GAME
@@ -188,18 +209,20 @@ export class Game extends Phaser.Scene {
                 this.scene.restart()
             }
         }        
-
     }
 
     enemyHit(player, kingPig) {
         // first check if player is attacking
-        if (this.player.isAttacking) {
-            console.log('enemy should be dead')
+        if (this.player.isAttacking && kingPig.active) {
+            kingPig.anims.play('kingPigDead', true)
+            kingPig.setVelocityX(0)
             return
         }
         if (Math.abs(player.x - kingPig.x) < 20
             &&
-            Math.abs(player.y - kingPig.y) < 20) {
+            Math.abs(player.y - kingPig.y) < 20
+            &&
+            kingPig.active) {
                 if (!this.player.isDead) {
                     this.player.dead()
                     this.playerDeadTime = this.time

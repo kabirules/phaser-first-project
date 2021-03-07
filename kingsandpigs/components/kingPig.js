@@ -27,7 +27,19 @@ export class KingPig {
             frames: this.anims.generateFrameNumbers('kingPigRun', { start: 0, end: 5 }),
             frameRate: 15,
             repeat: -1
-        })        
+        })
+        this.anims.create({
+            key: 'kingPigDead',
+            frames: this.anims.generateFrameNumbers('kingPigDead', { start: 0, end: 3 }),
+            frameRate: 15,
+            repeat: 0
+        })
+
+        this.kingPigSprite.on("animationcomplete", (animation)=>{
+            if (animation.key === 'kingPigDead') {
+                this.kingPigSprite.active = false
+            }
+        })
     }
 
     sprite() {
