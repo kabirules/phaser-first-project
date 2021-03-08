@@ -216,7 +216,8 @@ export class Game extends Phaser.Scene {
 
     enemyHit(player, kingPig) {
         // first check if player is attacking
-        if (this.player.isAttacking && kingPig.active) {
+        if (this.player.isAttacking && kingPig.active && 
+            (player.x < kingPig.x && !player.flipX) || (player.x > kingPig.x && player.flipX)) {
             kingPig.anims.play('kingPigDead', true)
             kingPig.setVelocityX(0)
             return
