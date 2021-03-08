@@ -161,6 +161,9 @@ export class Game extends Phaser.Scene {
             }
             if (time - this.playerAttackTime > 500) {
                 this.player.isAttacking = false
+                this.player.sprite().body.width = 32
+            } else {
+                this.player.sprite().body.width = 55
             }
         }
         //ENEMY PATROL
