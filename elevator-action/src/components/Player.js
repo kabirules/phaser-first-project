@@ -16,6 +16,12 @@ export class Player {
             frameRate: 5,
             repeat: -1
         })
+        this.anims.create({
+            key: 'playerStop',
+            frames: this.anims.generateFrameNumbers('playerStop', { start: 0, end: 0 }),
+            frameRate: 5,
+            repeat: -1
+        })        
     }
 
     getSprite() {
@@ -24,14 +30,19 @@ export class Player {
 
     moveLeft() {
         this.playerSprite.flipX = false
-        this.playerSprite.setVelocityX(-50)
+        this.playerSprite.setVelocityX(-60)
         this.playerSprite.anims.play('playerWalk', true)
     }
 
     moveRight() {
         this.playerSprite.flipX = true
-        this.playerSprite.setVelocityX(50)
+        this.playerSprite.setVelocityX(60)
         this.playerSprite.scaleX = Math.abs(this.playerSprite.scaleX)
         this.playerSprite.anims.play('playerWalk', true)
+    }
+
+    stop() {
+        this.playerSprite.setVelocityX(0)
+        this.playerSprite.anims.play('playerStop', true)
     }
 }
