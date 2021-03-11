@@ -6,19 +6,25 @@ export class Player {
     }
 
     create() {
-        this.playerSprite = this.physics.add.sprite(400, 300, 'player')
-        this.playerSprite.setBounce(0.2)
+        this.playerSprite = this.physics.add.sprite(400, 500, 'player')
+        this.playerSprite.setBounce(0.1)
         this.playerSprite.setCollideWorldBounds(true)
         // animations
         this.anims.create({
             key: 'playerWalk',
-            frames: this.anims.generateFrameNumbers('playerWalk', { start: 0, end: 1 }),
+            frames: this.anims.generateFrameNumbers('playerWalk', { start: 1, end: 0 }),
             frameRate: 5,
             repeat: -1
         })
         this.anims.create({
             key: 'playerStop',
             frames: this.anims.generateFrameNumbers('playerStop', { start: 0, end: 0 }),
+            frameRate: 5,
+            repeat: -1
+        })
+        this.anims.create({
+            key: 'playerShot',
+            frames: this.anims.generateFrameNumbers('playerShot', { start: 0, end: 0 }),
             frameRate: 5,
             repeat: -1
         })        
@@ -45,4 +51,8 @@ export class Player {
         this.playerSprite.setVelocityX(0)
         this.playerSprite.anims.play('playerStop', true)
     }
+
+    shot() {
+        this.playerSprite.anims.play('playerShot', true)
+    }    
 }

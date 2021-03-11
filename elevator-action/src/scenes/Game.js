@@ -8,7 +8,7 @@ export default class Game extends Phaser.Scene
 	}
 
     init() {
-
+        this.playerAttackTime = -999
     }
 
 	preload() {
@@ -20,8 +20,11 @@ export default class Game extends Phaser.Scene
         this.load.spritesheet('playerStop', 
             'assets/playerWalk.png',
             { frameWidth: 12, frameHeight: 24, spacing: 12}
-        );        
-        //this.load.image('player', 'playerWalk.png')
+        );
+        this.load.spritesheet('playerShot', 
+            'assets/playerShot.png',
+            { frameWidth: 34, frameHeight: 24}
+        ); 
     }
 
     create() {
@@ -35,7 +38,7 @@ export default class Game extends Phaser.Scene
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     }
 
-    update() {
+    update(time) {
         // player movement
         if (this.cursors.left.isDown) {
             this.player.moveLeft()
@@ -44,6 +47,9 @@ export default class Game extends Phaser.Scene
         } else {
             this.player.stop()
         }
-        //this.add.image(400, 300, 'player');
+        if (this.keySpace.isDown && time - this.playerAttackTime > 300) {
+            this.player.shot()
+            this.playerAttackTime = time
+        }
     }
 }
