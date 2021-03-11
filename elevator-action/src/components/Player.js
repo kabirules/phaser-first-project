@@ -9,6 +9,7 @@ export class Player {
         this.playerSprite = this.physics.add.sprite(400, 500, 'player')
         this.playerSprite.setBounce(0.1)
         this.playerSprite.setCollideWorldBounds(true)
+        this.isAttacking = false
         // animations
         this.anims.create({
             key: 'playerWalk',

@@ -24,7 +24,8 @@ export default class Game extends Phaser.Scene
         this.load.spritesheet('playerShot', 
             'assets/playerShot.png',
             { frameWidth: 34, frameHeight: 24}
-        ); 
+        );
+        this.load.image('bullet', 'assets/bullet.png');
     }
 
     create() {
@@ -47,9 +48,21 @@ export default class Game extends Phaser.Scene
         } else {
             this.player.stop()
         }
-        if (this.keySpace.isDown && time - this.playerAttackTime > 300) {
+        if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
+            this.player.isAttacking = true
             this.player.shot()
             this.playerAttackTime = time
+            let bulletOffset = this.player.getSprite().flipX?26:-15
+            let bulletVelocity = this.player.getSprite().flipX?200:-200
+            this.bullet = this.physics.add.sprite(this.player.getSprite().body.x+bulletOffset, this.player.getSprite().body.y+9, 'bullet')
+            this.bullet.setVelocityX(bulletVelocity)
+            this.bullet.body.allowGravity = false
+        }
+        // make the shooting animation last 150ms
+        if (time - this.playerAttackTime > 150) {
+            this.player.isAttacking = false
+        } else {
+            this.player.shot()
         }
     }
 }
