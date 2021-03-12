@@ -7,6 +7,7 @@ export class Player {
 
     create() {
         this.playerSprite = this.physics.add.sprite(400, 500, 'player')
+        this.playerSprite.setScale(1.2)
         this.playerSprite.setBounce(0.1)
         this.playerSprite.setCollideWorldBounds(true)
         this.isAttacking = false
@@ -28,7 +29,13 @@ export class Player {
             frames: this.anims.generateFrameNumbers('playerShot', { start: 0, end: 0 }),
             frameRate: 5,
             repeat: -1
-        })        
+        })
+        this.anims.create({
+            key: 'playerDuck',
+            frames: this.anims.generateFrameNumbers('playerDuck', { start: 0, end: 0 }),
+            frameRate: 5,
+            repeat: -1
+        })
     }
 
     getSprite() {
@@ -55,5 +62,10 @@ export class Player {
 
     shot() {
         this.playerSprite.anims.play('playerShot', true)
-    }    
+    }
+
+    duck() {
+        this.playerSprite.setVelocityX(0)
+        this.playerSprite.anims.play('playerDuck', true)
+    }
 }

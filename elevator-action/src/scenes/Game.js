@@ -25,6 +25,10 @@ export default class Game extends Phaser.Scene
             'assets/playerShot.png',
             { frameWidth: 34, frameHeight: 24}
         );
+        this.load.spritesheet('playerDuck', 
+            'assets/playerDuck.png',
+            { frameWidth: 11, frameHeight: 24}
+        );
         this.load.image('bullet', 'assets/bullet.png');
     }
 
@@ -48,6 +52,9 @@ export default class Game extends Phaser.Scene
         } else {
             this.player.stop()
         }
+        if (this.cursors.down.isDown) {
+            this.player.duck()
+        }           
         if (this.keySpace.isDown && time - this.playerAttackTime > 500) {
             this.player.isAttacking = true
             this.player.shot()
